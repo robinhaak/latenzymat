@@ -29,8 +29,8 @@ if ~exist('useMaxDur', 'var') || isempty(useMaxDur)
 elseif isscalar(useMaxDur)
     useMaxDur = [0 useMaxDur];
 end
-assert(useMaxDur(1) <= 0, 'useMaxDur(1) must be a negative scalar.');
-assert(useMaxDur(2) > 0, 'useMaxDur(2) must be a positive scalar.');
+assert(useMaxDur(1) <= 0, 'first element of useMaxDur must be a negative scalar.');
+assert(useMaxDur(2) > 0, 'second element of useMaxDur must be a positive scalar.');
 
 if ~exist('trialType', 'var') || isempty(trialType)
     trialType = ones(size(eventTimes));
