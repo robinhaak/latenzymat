@@ -15,7 +15,6 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 % 19 September 2024
 %   - code clean-up to make it more user friendly
 %   - added new default colormap
-%   - include subfunctions for sharing
 %   - removed doSort flag
 
 %% prep
