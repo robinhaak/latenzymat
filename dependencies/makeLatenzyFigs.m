@@ -65,7 +65,7 @@ title(lgd, 'Iteration');
 
 %plot offset from linear baseline
 figHandles(3) = subplot(2,2,3); hold on
-plot(useMaxDur,[0 0],'color',[0.5 0.5 0.5],'LineWidth',lineWidth);
+plot(useMaxDur,[0 0],'color',[0.5 0.5 0.5],'LineWidth',lineWidth,'LineStyle','--');
 for iter = 1:numIters
     plot(realTime{iter},realDiff{iter},'color',useColors(iter,:),'LineWidth',lineWidth);
 end
