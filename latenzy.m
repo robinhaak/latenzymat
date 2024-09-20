@@ -48,7 +48,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % 18 September 2024
 % - added allowNegative flag, to allow negative latencies (e.g., for behavioral events)
 % 20 September 2024
-% - made sure that code runs even when Parallel Computing Toolbox is not present
+% - made sure that code runs when Parallel Computing Toolbox is not present
 
 %% prep
 %ensure correct orientation
