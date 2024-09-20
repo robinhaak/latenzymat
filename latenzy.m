@@ -28,6 +28,8 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %       - randDiff: idem
 %       - randTime: idem
 %       - meanRandDiff: idem
+%       - pValsPeak: p-values obtained by comparing to shuffles
+%       - peakZ: same as pValsPeak but z-scored
 %       - latencyIdx: use to index arrays above
 %       - handleFigs: figure handles
 %
@@ -219,6 +221,7 @@ sLatenzy.meanRealDiff = meanRealDiffAgg;
 sLatenzy.randDiff = randDiffAgg;
 sLatenzy.randTime = randTimeAgg;
 sLatenzy.meanRandDiff = meanRandDiffAgg;
+sLatenzy.pValsPeak = pValPeakAgg;
 sLatenzy.peakZ = peakZAgg;
 sLatenzy.latencyIdx = peakTimesAgg==respLatency;
 
