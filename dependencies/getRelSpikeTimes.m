@@ -34,9 +34,9 @@ if ~exist('useMaxDur','var') || isempty(useMaxDur)
 end
 if isscalar(useMaxDur), useMaxDur = [0 useMaxDur]; end
 assert(useMaxDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('UseMaxDur(1) must be a negative scalar, you requested %.2f',useMaxDur(1)));
+    sprintf('The first element of useMaxDur must be a negative scalar, you requested %.2f',useMaxDur(1)));
 assert(useMaxDur(2)>0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('UseMaxDur(2) must be a positive scalar, you requested %.2f',useMaxDur(2)));
+    sprintf('These second element of useMaxDur must be a positive scalar, you requested %.2f',useMaxDur(2)));
 if ~exist('addArtifSpikes','var') || isempty(addArtifSpikes)
     addArtifSpikes = false;
 end

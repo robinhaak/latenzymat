@@ -1,6 +1,6 @@
 function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
 % get stimulus-associated response latency, syntax:
-%   [respLatency,sLatency] = getLatenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,doStitch,useParPool,useDirectQuant,makePlots)
+%   [respLatency,sLatenzy] = getLatenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
 %   input:
 %   - spikeTimes: [S x 1]: spike times (s)
 %   - eventTimes: [T x 1]: event (start) times (s)
@@ -45,8 +45,10 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % - mean subtraction to make computation of significance time-invariant (https://elifesciences.org/articles/71969, see 'a proof of time-invariance')
 % - removed restrictRange as input
 % - changed parallel pool behavior: parfor enabled by default when parpool is active
-% 18 September
+% 18 September 2024
 % - added allowNegative flag, to allow negative latencies (e.g., for behavioral events)
+% 20 September 2024
+% - made sure that code runs even when Parallel Computing Toolbox is not present
 
 %% prep
 %ensure correct orientation
@@ -60,9 +62,9 @@ if ~exist('useMaxDur','var') || isempty(useMaxDur)
 end
 if isscalar(useMaxDur),useMaxDur = [0 useMaxDur];end
 assert(useMaxDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('UseMaxDur(1) must be a negative scalar, you requested %.3f',useMaxDur(1)));
+    sprintf('The first element of useMaxDur must be a negative scalar, you requested %.3f',useMaxDur(1)));
 assert(useMaxDur(2)>0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('UseMaxDur(2) must be a positive scalar, you requested %.3f',useMaxDur(2)));
+    sprintf('The second element of useMaxDur must be a positive scalar, you requested %.3f',useMaxDur(2)));
 
 %get resampNum
 if ~exist('resampNum','var') || isempty(resampNum)
@@ -88,11 +90,15 @@ end
 
 %get useParPool
 if ~exist('useParPool','var') || isempty(useParPool)
-    objPool = gcp('nocreate');
-    if isempty(objPool) || ~isprop(objPool,'NumWorkers') || objPool.NumWorkers < 4
+    try
+        objPool = gcp('nocreate'); %get current parallel pool (no creation)
+        if isempty(objPool) || ~isprop(objPool,'NumWorkers') || objPool.NumWorkers < 4
+            useParPool = false; 
+        else
+            useParPool = true;
+        end
+    catch
         useParPool = false;
-    else
-        useParPool = true;
     end
 end
 
@@ -131,7 +137,7 @@ keepPeaks = [];
 thisMaxDur = useMaxDur;
 doContinue = true;
 thisIter = 0;
-sLatenzy = [];
+sLatenzy = struct();
 
 %check if negative latencies are allowed
 minLatency = 0;

@@ -7,6 +7,8 @@ function figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useMaxDur,m
 % - created by Robin Haak
 % 16 September 2024
 % - mean subtraction for the real + shuffles plot
+% 20 September 2024
+% - code clean-up
 
 %% prep
 %#ok<*AGROW>
@@ -77,12 +79,12 @@ title('\color{red}x\color{black} = estimated onset');
 
 %for iteration w/latency, plot real + shuffles
 figHandles(4) = subplot(2,2,4); hold on
-for intShuffle=1:length(randDiff)
-    plot(randTime{intShuffle,latenzyIdx},(randDiff{intShuffle,latenzyIdx}-meanRandDiff(intShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5],'LineWidth',lineWidth);
+for thisShuffle=1:length(randDiff)
+    plot(randTime{thisShuffle,latenzyIdx},(randDiff{thisShuffle,latenzyIdx}-meanRandDiff(thisShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5],'LineWidth',lineWidth);
 end
 plot(realTime{latenzyIdx},(realDiff{latenzyIdx}-meanRealDiff(latenzyIdx)),'color',useColors(latenzyIdx,:),'LineWidth',lineWidth);
 scatter(peakTimes(latenzyIdx),(peakVals(latenzyIdx)-meanRealDiff(latenzyIdx)),markerSize,'xr','LineWidth',lineWidth);
-if find(latenzyIdx)==1,xlim(useMaxDur);
+if latencyIdx(1),xlim(useMaxDur);
 else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
