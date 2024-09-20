@@ -80,11 +80,11 @@ title('\color{red}x\color{black} = estimated onset');
 %for iteration w/latency, plot real + shuffles
 figHandles(4) = subplot(2,2,4); hold on
 for thisShuffle=1:length(randDiff)
-    plot(randTime{thisShuffle,latenzyIdx},(randDiff{thisShuffle,latenzyIdx}-meanRandDiff(thisShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5],'LineWidth',lineWidth);
+    plot(randTime{thisShuffle,latenzyIdx},(randDiff{thisShuffle,latenzyIdx}-meanRandDiff(thisShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5 0.5],'LineWidth',lineWidth);
 end
 plot(realTime{latenzyIdx},(realDiff{latenzyIdx}-meanRealDiff(latenzyIdx)),'color',useColors(latenzyIdx,:),'LineWidth',lineWidth);
 scatter(peakTimes(latenzyIdx),(peakVals(latenzyIdx)-meanRealDiff(latenzyIdx)),markerSize,'xr','LineWidth',lineWidth);
-if latencyIdx(1),xlim(useMaxDur);
+if latenzyIdx(1),xlim(useMaxDur);
 else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
