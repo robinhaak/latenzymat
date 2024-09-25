@@ -39,7 +39,7 @@ end
 numTrialType = numel(uniqueType);
 
 if ~exist('plotColor', 'var') || isempty(plotColor) || size(plotColor, 1) ~= numTrialType
-    colorsOut = generateColorblindColors(numTrialType - 1);
+    colorsOut = getColors(numTrialType - 1);
     colorsOut = colorsOut(randperm(size(colorsOut, 1)), :);
     plotColor = [0 0 0; colorsOut];
 end
@@ -119,7 +119,7 @@ end
 
 end
 
-function colors = generateColorblindColors(numColors)
+function colors = getColors(numColors)
 % this function generates a list of RGB color codes with the specified
 % number of colors using an extended custom palette. The function returns
 % an [numColors x 3] matrix of RGB color codes.

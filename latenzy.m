@@ -153,7 +153,7 @@ while doContinue
 
     %perform data-stitching
     if doStitch
-        discardEdges = true; %best if this is true by default
+        discardEdges = true;
         [pseudoSpikeTimes,pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,thisMaxDur,discardEdges);
     else
         pseudoSpikeTimes = spikeTimes;
