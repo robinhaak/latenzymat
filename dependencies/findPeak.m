@@ -17,11 +17,11 @@ function [peakVal,peakTime] = findPeak(data,time,restrictRange,switchPosNeg)
 % 30 Aug 2023
 %   - changed from max(abs()) to peak detection
 % 26 Sep 2023
-%   - minor change to code
+%   - code clean-up
 % 7 Feb 2024
 %   - changed code to handle selection of the largest peak when one of the peaks vals is empty 
 % 3 Mar 2024
-%   - slight change to peak detection
+%   - slight change in peak detection
 
 %% prep
 peakVal = nan;
