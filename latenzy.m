@@ -1,6 +1,6 @@
 function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
 % get stimulus-associated response latency, syntax:
-%   [respLatency,sLatenzy] = getLatenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
+%   [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
 %   input:
 %   - spikeTimes: [S x 1]: spike times (s)
 %   - eventTimes: [T x 1]: event (start) times (s)
