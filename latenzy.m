@@ -15,7 +15,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   - makePlots: integer, plotting switch (0=none, 1=raster+traces, 2=traces only, default: 0)
 %
 %   output:
-%   - respLatency: response latency (s)
+%   - respLatency: response latency (s) (NaN when no latency could be estimated)
 %   - sLatenzy: structure with fields:
 %       - latency: response latency (s)
 %       - peakTimes: detected peak/through times, one per iter (s)
@@ -139,7 +139,7 @@ keepPeaks = [];
 thisMaxDur = useMaxDur;
 doContinue = true;
 thisIter = 0;
-sLatenzy = struct();
+sLatenzy = struct;
 
 %check if negative latencies are allowed
 minLatency = 0;
@@ -191,7 +191,7 @@ while doContinue
     end
 
     %check whether to continue
-    if realPeakT > minLatency && peakZ>minPeakZ && ~isinf(peakZ)
+    if realPeakT > minLatency && peakZ > minPeakZ && ~isinf(peakZ)
         keepPeaks(thisIter) = true;
         thisMaxDur(2) = realPeakT;
     else
@@ -209,7 +209,6 @@ else
 end
 
 %build output
-sLatenzy = struct;
 sLatenzy.latency = respLatency;
 sLatenzy.peakTimes = peakTimesAgg;
 sLatenzy.peakVals = peakValsAgg;
