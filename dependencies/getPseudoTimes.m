@@ -74,7 +74,7 @@ for thisEvent = 1:eventNum
         pseudoEventT = pseudoEventT + fullDuration;
     end
 
-    %%make local pseudo times
+    %% make local pseudo times
     if isempty(useSamples)
         localPseudoT = [];
     else
