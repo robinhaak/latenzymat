@@ -67,8 +67,8 @@ if numTrialType > 1
 
         %plot spikes per trial
         for thisTrial = 1:numel(thisTrialStarts)
-            vecTimes = spikesPerEvent{thisTrial};
-            line([vecTimes(:)'; vecTimes(:)'], [(thisTrial + offset) * ones(1, numel(vecTimes)) - 0.5; (thisTrial + offset) * ones(1, numel(vecTimes)) + 0.5], ...
+            theseTimes = spikesPerEvent{thisTrial};
+            line([theseTimes(:)'; theseTimes(:)'], [(thisTrial + offset) * ones(1, numel(theseTimes)) - 0.5; (thisTrial + offset) * ones(1, numel(theseTimes)) + 0.5], ...
                 'Color', plotColor(thisTrialType, :), 'LineWidth', 1.5);
         end
 
@@ -89,8 +89,8 @@ else
 
     %plot spikes per trial
     for thisTrial = 1:numel(eventTimes)
-        vecTimes = spikesPerEvent{thisTrial};
-        line([vecTimes(:)'; vecTimes(:)'], [thisTrial * ones(1, numel(vecTimes)) - 0.5; thisTrial * ones(1, numel(vecTimes)) + 0.5], ...
+        theseTimes = spikesPerEvent{thisTrial};
+        line([theseTimes(:)'; theseTimes(:)'], [thisTrial * ones(1, numel(theseTimes)) - 0.5; thisTrial * ones(1, numel(theseTimes)) + 0.5], ...
             'Color', plotColor(trialType(thisTrial), :), 'LineWidth', 1.5);
     end
 end

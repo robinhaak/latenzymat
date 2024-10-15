@@ -7,7 +7,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   - useMaxDur: scalar or [N x 2], time to include after/around event times (s) (default: [0 min(diff(eventtimes))])
 %   - resampNum: integer, number of resamples (default: 100)
 %   - jitterSize: scalar, temporal jitter window relative to useMaxDur (s) (default: 2)
-%   - minPeakZ: scalar, minimal z-score for peak significance (default: 2)
+%   - minPeakZ: scalar, minimal z-stat for peak significance (default: 2)
 %   - doStitch: boolean flag, perform data stitching, highly recommended! (default: true)
 %   - useParPool: boolean flag, use parallel pool for resamples (default: true, but only when parallel pool is already active!)
 %   - useDirectQuant: boolean flag, use the empirical null-distribution rather than the Gumbel approximation (default: false)
@@ -40,7 +40,6 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % - cleaned up the code
 % 8 August 2024
 % - worked on plotting function
-% - changed peakSwitch so that it is always 0
 % 12 August 2024
 % - worked on computation of significance
 % 16 September 2024
@@ -82,7 +81,7 @@ assert(jitterSize>0,[mfilename ':WrongJitterInput'], ...
 
 %get peakZ
 if ~exist('minPeakZ','var') || isempty(minPeakZ)
-    minPeakZ = 2;
+    minPeakZ = 1.96; %corresponds to p = 0.05
 end
 
 %get doStitch
