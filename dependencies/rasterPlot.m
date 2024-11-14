@@ -16,21 +16,24 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 %   - code clean-up to make it more user friendly
 %   - added new default colormap
 %   - removed doSort flag
+% 14 November 2024
+%   - changed useMaxDur behavior
 
 %% prep
 %ensure correct orientation
 spikeTimes = spikeTimes(:);
 eventTimes = eventTimes(:);
 
-%default duration settings
-if ~exist('useMaxDur', 'var') || isempty(useMaxDur)
+%get useMaxDur
+if ~exist('useMaxDur','var') || isempty(useMaxDur)
     eventTimes = sort(eventTimes);
-    useMaxDur = [0 min(diff(eventTimes))];
-elseif isscalar(useMaxDur)
-    useMaxDur = [0 useMaxDur];
+    useMaxDur = min(diff(eventTimes));
 end
-assert(useMaxDur(1) <= 0, 'first element of useMaxDur must be a negative scalar.');
-assert(useMaxDur(2) > 0, 'second element of useMaxDur must be a positive scalar.');
+if isscalar(useMaxDur)
+    useMaxDur = sort([0 useMaxDur]);
+elseif numel(useMaxDur)~=2
+    error([mfilename ':WrongMaxDurInput'],'useMaxDur must be a scalar or a two-element array');
+end
 
 if ~exist('trialType', 'var') || isempty(trialType)
     trialType = ones(size(eventTimes));

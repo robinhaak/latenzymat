@@ -21,6 +21,8 @@ function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes
 % 9 April 2024
 %   - added option to add two artificial spikes, at beginning and end
 %   - useMaxDur instead of separate pre- and post-event time variables
+% 14 November 2024
+%   - changed useMaxDur behavior
 
 %% prep
 %ensure correct orientation
@@ -33,11 +35,9 @@ if ~exist('useMaxDur','var') || isempty(useMaxDur)
     useMaxDur = min(diff(eventTimes));
 end
 
-if isscalar(useMaxDur), useMaxDur = [0 useMaxDur]; end
-assert(useMaxDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('The first element of useMaxDur must be a negative scalar, you requested %.2f',useMaxDur(1)));
-assert(useMaxDur(2)>0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('These second element of useMaxDur must be a positive scalar, you requested %.2f',useMaxDur(2)));
+if isscalar(useMaxDur), useMaxDur = sort([0 useMaxDur]); end
+assert(useMaxDur(2)>useMaxDur(1),[mfilename ':WrongMaxDurInput'],...
+    sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
 
 if ~exist('addArtifSpikes','var') || isempty(addArtifSpikes)
     addArtifSpikes = false;

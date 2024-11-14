@@ -50,6 +50,9 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % - added allowNegative flag, to allow negative latencies (e.g., for behavioral events)
 % 20 September 2024
 % - made sure that code runs when Parallel Computing Toolbox is not present
+% 14 November 2024
+% - worked on the estimation of negative latencies (fixed bug detected by Eric Lowet)
+% - changed useMaxDur behavior to better accomodate estimation of negative latencies
 
 %% prep
 %ensure correct orientation
@@ -61,11 +64,22 @@ if ~exist('useMaxDur','var') || isempty(useMaxDur)
     eventTimes = sort(eventTimes);
     useMaxDur = min(diff(eventTimes));
 end
-if isscalar(useMaxDur),useMaxDur = [0 useMaxDur];end
-assert(useMaxDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('The first element of useMaxDur must be a negative scalar, you requested %.3f',useMaxDur(1)));
-assert(useMaxDur(2)>0,[mfilename ':WrongMaxDurInput'],...
-    sprintf('The second element of useMaxDur must be a positive scalar, you requested %.3f',useMaxDur(2)));
+if isscalar(useMaxDur)
+    useMaxDur = sort([0 useMaxDur]);
+elseif numel(useMaxDur)~=2
+    error([mfilename ':WrongMaxDurInput'],'useMaxDur must be a scalar or a two-element array');
+end
+
+%check useMaxDur
+if useMaxDur(2)>0
+    assert(useMaxDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
+        sprintf('When useMaxDur(2) > 0, useMaxDur(1) must be a negative scalar or 0, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
+elseif useMaxDur(2)==0
+    assert(useMaxDur(1)<0,[mfilename ':WrongMaxDurInput'],...
+        sprintf('When useMaxDur(2) is 0, useMaxDur(1) must be a negative scalar, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
+elseif useMaxDur(2)<0
+        error([mfilename ':WrongMaxDurInput'],'useMaxDur(2) cannot be negative when useMaxDur(1) is negative!');
+end
 
 %get resampNum
 if ~exist('resampNum','var') || isempty(resampNum)
@@ -81,7 +95,7 @@ assert(jitterSize>0,[mfilename ':WrongJitterInput'], ...
 
 %get peakZ
 if ~exist('minPeakZ','var') || isempty(minPeakZ)
-    minPeakZ = 1.96; %corresponds to p = 0.05
+    minPeakZ = 1.96; %corresponds to p=0.05
 end
 
 %get doStitch
