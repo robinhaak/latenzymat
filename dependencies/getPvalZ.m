@@ -1,6 +1,8 @@
 function [pVals,Z] = getPvalZ(maxD,maxRandD,useDirectQuant)
 %compute (z-scored) p-value, syntax:
 %   [pVal,Z] = getPvalZ(maxD,maxRandD,useDirectQuant)
+%
+%based on code by Jorrit Montijn
 
 %check inputs
 if ~exist('useDirectQuant','var') || isempty(useDirectQuant)
