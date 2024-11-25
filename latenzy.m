@@ -95,7 +95,7 @@ assert(jitterSize>0,[mfilename ':WrongJitterInput'], ...
 
 %get peakZ
 if ~exist('minPeakZ','var') || isempty(minPeakZ)
-    minPeakZ = 1.96; %corresponds to α=0.05
+    minPeakZ = 1.96; %corresponds to alpha=0.05
 end
 
 %get doStitch
