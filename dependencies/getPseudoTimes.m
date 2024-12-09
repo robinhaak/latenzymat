@@ -2,7 +2,7 @@ function [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes, event
 % perform data-stitching, syntax:
 %   [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useMaxDur,discardEdges)
 
-% Ensure correct orientation
+%ensure correct orientation
 spikeTimes = sort(spikeTimes(:));
 eventTimes = sort(eventTimes(:));
 
