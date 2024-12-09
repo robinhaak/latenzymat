@@ -29,7 +29,6 @@ peakZ = sLatenzy.peakZ;
 latenzyIdx = sLatenzy.latenzyIdx;
 
 numIters = numel(peakTimes);
-
 useColors = getAbyss(numIters);
 lineWidth = 1.5;
 markerSize = 60; %50;
