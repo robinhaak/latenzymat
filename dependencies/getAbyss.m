@@ -4,7 +4,7 @@ function cmap = getAbyss(n)
 %
 %   if n is not provided, a default of 256 colors is used.
 
-if ~exist(n,'var') || isempty(n)
+if ~exist('n','var') || isempty(n)
     n = 256; %default
 end
 
