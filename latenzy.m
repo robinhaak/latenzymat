@@ -43,8 +43,6 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % 12 August 2024
 % - worked on computation of significance
 % 16 September 2024
-% - mean subtraction to make computation of significance time-invariant (https://elifesciences.org/articles/71969, see 'a proof of time-invariance')
-% - removed restrictRange as input
 % - changed parallel pool behavior: parfor enabled by default when parpool is active
 % 18 September 2024
 % - added allowNegative flag, to allow negative latencies (e.g., for behavioral events)
