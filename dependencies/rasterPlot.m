@@ -105,12 +105,13 @@ xlim(useMaxDur);
 xlabel('Time from event (s)');
 ylabel('Trial');
 
-%add a secondary y-axis for labels
-ax2 = axes('Position', [0.9 0.1 0.05 0.8], 'Color', 'none', 'YAxisLocation', 'right');
-axis(ax2,'off'); % Turn off the axis
-
 %add labels for each trialType on the right y-axis
 if numTrialType > 1
+
+    %add a secondary y-axis for labels
+    ax2 = axes('Position', [0.9 0.1 0.05 0.8], 'Color', 'none', 'YAxisLocation', 'right');
+    axis(ax2,'off'); % Turn off the axis
+
     for thisTrialType = 1:numTrialType
         numTrials = numel(find(trialType == uniqueType(thisTrialType)));
         yLabelPos = offset + round(numTrials / 2) - numTrials; % Adjust to half
