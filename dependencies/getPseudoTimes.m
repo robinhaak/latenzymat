@@ -1,8 +1,8 @@
-function [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useMaxDur,discardEdges)
+function [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes, eventTimes, useMaxDur, discardEdges)
 % perform data-stitching, syntax:
 %   [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useMaxDur,discardEdges)
 
-%ensure correct orientation
+% Ensure correct orientation
 spikeTimes = sort(spikeTimes(:));
 eventTimes = sort(eventTimes(:));
 
@@ -12,8 +12,8 @@ if ~exist('useMaxDur', 'var') || isempty(useMaxDur)
     useMaxDur = min(diff(eventTimes));
 end
 if isscalar(useMaxDur), useMaxDur = sort([0 useMaxDur]); end
-assert(useMaxDur(2)>useMaxDur(1),[mfilename ':WrongMaxDurInput'],...
-    sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
+assert(useMaxDur(2) > useMaxDur(1), [mfilename ':WrongMaxDurInput'], ...
+    sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]', useMaxDur(1), useMaxDur(2)));
 if ~exist('discardEdges', 'var') || isempty(discardEdges)
     discardEdges = false;
 end
@@ -33,24 +33,19 @@ for thisEvent = 1:eventNum
     eventT = eventTimes(thisEvent) + useMaxDur(1);
     startSample = find(spikeTimes >= eventT, 1);
     endSample = find(spikeTimes > (eventT + fullDuration), 1) - 1;
-    
+
     %handle cases where no pre-event spikes are found
     if isempty(startSample), startSample = sampleNum + 1; end
     if isempty(endSample) || startSample > endSample
         startSample = [];
-        endSample = [];
+        endSample = sampleNum;
     end
 
-    %handle the case where no spikes exist in the current window
-    if isempty(endSample)
-        endSample = numel(spikeTimes);
-    end
-    
+    %handle edge case for first and last events without adding spikes
     theseSamples = startSample:endSample;
     remSamples = (theseSamples <= 0) | (theseSamples > sampleNum);
     useSamples = theseSamples(~remSamples);
 
-    %handle edge case for first and last events without adding spikes
     if ~isempty(useSamples)
         if thisEvent == 1 && ~discardEdges
             useSamples = 1:useSamples(end);
@@ -58,7 +53,7 @@ for thisEvent = 1:eventNum
             useSamples = useSamples(1):sampleNum;
         end
     end
-    
+
     %handle spike times
     addT = spikeTimes(useSamples);
     samplesOverlap = (useSamples <= lastUsedSample);
@@ -74,7 +69,7 @@ for thisEvent = 1:eventNum
         pseudoEventT = pseudoEventT + fullDuration;
     end
 
-    %% make local pseudo times
+    %make local pseudo times
     if isempty(useSamples)
         localPseudoT = [];
     else
@@ -92,36 +87,38 @@ for thisEvent = 1:eventNum
     pseudoEventTimes(thisEvent) = pseudoEventT;
 end
 
-%% add beginning
+%add beginning
 if ~discardEdges && ~isempty(firstSample) && firstSample > 1
     stepBegin = spikeTimes(firstSample) - spikeTimes(firstSample - 1);
     sampAddBeginning = 1:(firstSample - 1);
-    
+
     %only add beginning spikes if they exist
     if ~isempty(sampAddBeginning)
         pseudoSpikeT = cat(2, {spikeTimes(sampAddBeginning) - spikeTimes(sampAddBeginning(1)) + pseudoT0 - stepBegin - range(spikeTimes(sampAddBeginning))}, pseudoSpikeT);
     end
 end
 
-%% add end
-numSpikes = numel(spikeTimes);
-lastUsedSample = find(spikeTimes > (eventTimes(end) + fullDuration), 1);
+%add end
+if ~discardEdges
+    %find remaining spikes after the last event window
+    lastUsedSample = find(spikeTimes > (eventTimes(end) + fullDuration), 1);
+    if isempty(lastUsedSample)
+        %if no spikes are beyond the last event window, take the remaining spikes
+        sampAddEnd = (find(spikeTimes >= eventTimes(end), 1)):sampleNum;
+    else
+        %otherwise, consider spikes within the range
+        sampAddEnd = lastUsedSample:sampleNum;
+    end
 
-%ensure no artificial spikes are added in the post-event window
-if ~discardEdges && ~isempty(lastUsedSample) && numSpikes > lastUsedSample
-    sampAddEnd = lastUsedSample:numSpikes;
-    
     %only add end spikes if they exist
     if ~isempty(sampAddEnd)
-        pseudoSpikeT = cat(2, pseudoSpikeT, {spikeTimes(sampAddEnd) - eventT + pseudoEventT + fullDuration});
+        pseudoSpikeT = cat(2, pseudoSpikeT, {spikeTimes(sampAddEnd) - eventTimes(end) + pseudoEventT});
     end
 end
 
-%% output
 %recombine into a single vector
-pseudoSpikeTimes = cell2vec(pseudoSpikeT);
+pseudoSpikeTimes = cell2mat(pseudoSpikeT(:));
 
 %adjust event times
 pseudoEventTimes = pseudoEventTimes + abs(useMaxDur(1));
-
 end
