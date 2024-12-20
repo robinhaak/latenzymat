@@ -50,4 +50,5 @@ fracLinear = (relSpikeTimes-relSpikeTimes(1))./(relSpikeTimes(end)-relSpikeTimes
 
 %compute difference
 tempDiff = spikeFracs-fracLinear;
+% tempDiff = tempDiff-mean(tempDiff);
 end
