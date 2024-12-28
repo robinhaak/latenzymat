@@ -52,7 +52,7 @@ function [dblP,dblZ,dblMode,dblBeta] = getGumbel(dblE,dblV,dblX)
 	dblZ = -norminv(dblP/2);
 	
 	% approximation for large X
-	dblP(isinf(dblZ)) = exp( (dblMode-dblX(isinf(dblZ)))./dblBeta ) ;
+	dblP(isinf(dblZ)) = exp((dblMode-dblX(isinf(dblZ)))./dblBeta) ;
 	%transform to output z-score
 	dblZ = -norminv(dblP/2);
 end
