@@ -1,6 +1,6 @@
-function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
+function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNegative,makePlots)
 % get stimulus-associated response latency, syntax:
-%   [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,allowNegative,makePlots)
+%   [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNegative,makePlots)
 %   input:
 %   - spikeTimes: [S x 1]: spike times (s)
 %   - eventTimes: [T x 1]: event (start) times (s)
@@ -11,7 +11,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   - doStitch: boolean flag, perform data stitching, highly recommended! (default: true)
 %   - useParPool: boolean flag, use parallel pool for resamples (default: true, but only when parallel pool is already active!)
 %   - useDirectQuant: boolean flag, use the empirical null-distribution rather than the Gumbel approximation (default: false)
-%   - allowNegative: boolean flag, allow negative latencies (default: false)
+%   - restrictNegative: boolean flag, restrict negative latencies (default: false)
 %   - makePlots: integer, plotting switch (0=none, 1=raster+traces, 2=traces only, default: 0)
 %
 %   output:
@@ -49,8 +49,12 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % 20 September 2024
 % - made sure that code runs when Parallel Computing Toolbox is not present
 % 14 November 2024
-% - worked on the estimation of negative latencies (fixed bug detected by Eric Lowet)
+% - worked on the estimation of negative latencies
 % - changed useMaxDur behavior to better accomodate estimation of negative latencies
+% 30 December 2024
+% - removed separate function for peak detection, using min/max instead
+% 3 January 2025
+% - changed allowNegative to restrictNegative
 
 %% prep
 %ensure correct orientation
@@ -121,8 +125,8 @@ if ~exist('useDirectQuant','var') || isempty(useDirectQuant)
 end
 
 %allowNegative
-if ~exist('allowNegative','var') || isempty(allowNegative)
-    allowNegative = false;
+if ~exist('restrictNegative','var') || isempty(restrictNegative)
+    restrictNegative = false;
 end
 
 %get makePlots
@@ -152,10 +156,10 @@ doContinue = true;
 thisIter = 0;
 sLatenzy = struct;
 
-%check if negative latencies are allowed
-minLatency = 0;
-if allowNegative
-    minLatency = useMaxDur(1);
+%check if negative latencies are restricted
+minLatency = useMaxDur(1);
+if restrictNegative
+    minLatency = 0;
 end
 
 %run
@@ -173,7 +177,16 @@ while doContinue
 
     %get largest deviation
     [realDiff,realTime,spikeFracs,fracLinear] = calcTempOffset(pseudoSpikeTimes,pseudoEventTimes,thisMaxDur);
-    [realPeakV,realPeakT] = findPeak(realDiff,realTime);
+    [maxVal,maxIdx] = max(realDiff);
+    [minVal,minIdx] = min(realDiff);
+    if abs(minVal) >= abs(maxVal)
+        realPeakV = minVal;
+        realPeakIdx = minIdx;
+    else
+        realPeakV = maxVal;
+        realPeakIdx = maxIdx;
+    end
+    realPeakT = realTime(realPeakIdx);
     realPeakSub = realPeakV-mean(realDiff);
 
     %run bootstraps

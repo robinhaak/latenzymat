@@ -9,6 +9,8 @@ function [peaksRandD,resampD,resampT] = jitteredBootstraps(spikeTimes,eventTimes
 %   - cleanup of code
 % 10 April 2024
 %   - useMaxDur instead of separate pre- and post-event time variables
+% 30 December 2024
+% - removed separate function for peak detection, using min/max instead
 
 %% prep
 %ensure correct orientation
@@ -33,7 +35,16 @@ if useParPool
     parfor resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
         [randD,randT] = calcTempOffset(spikeTimes,randEventT,useMaxDur);
-        peakRandD = findPeak(randD,randT,[],switchPosNeg);
+        % peakRandD = findPeak(randD,randT,[],switchPosNeg);
+    
+        maxVal = max(randD);
+        minVal = min(randD);
+        if abs(minVal) >= abs(maxVal)
+            peakRandD = minVal;
+        else
+            peakRandD = maxVal;
+        end
+
         resampD{resamp} = randD;
         resampT{resamp} = randT;
         if ~isnan(peakRandD)
@@ -44,7 +55,15 @@ else
     for resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
         [randD,randT] = calcTempOffset(spikeTimes,randEventT,useMaxDur);
-        peakRandD = findPeak(randD,randT,[],switchPosNeg);
+        % peakRandD = findPeak(randD,randT,[],switchPosNeg);
+ 
+        maxVal = max(randD);
+        minVal = min(randD);
+        if abs(minVal) >= abs(maxVal)
+            peakRandD = minVal;
+        else
+            peakRandD = maxVal;
+        end
         resampD{resamp} = randD;
         resampT{resamp} = randT;
         if ~isnan(peakRandD)
