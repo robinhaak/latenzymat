@@ -3,9 +3,9 @@ function [pVals,Z] = computeZ(maxD,maxRandD,useDirectQuant)
 %   [pVals,Z] = computeZ(maxD,maxRandD,useDirectQuant)
 %
 % inputs:
-%   - maxD: [N x 1] Observed maximum values.
-%   - maxRandD: [M x 1] Randomized maximum values (used as null distribution).
-%   - useDirectQuant: Boolean, use empirical quantiles (default: false).
+%   - maxD: [N x 1] observed maximum values.
+%   - maxRandD: [M x 1] randomized maximum values (used as null distribution).
+%   - useDirectQuant: boolean, use empirical quantiles (default: false).
 %
 % outputs:
 %   - pVals: p-values for the observed values
@@ -19,7 +19,8 @@ function [pVals,Z] = computeZ(maxD,maxRandD,useDirectQuant)
 %     2. Gumbel distribution fitting for statistical testing (default).
 %
 % history:
-%   6 January 2025 - created by Robin Haak based on code by Jorrit Montijn.
+%   6 January 2025 - v0.9
+%   - created by Robin Haak based on code by Jorrit Montijn.
 
 %% check inputs
 if ~exist('useDirectQuant','var') || isempty(useDirectQuant)

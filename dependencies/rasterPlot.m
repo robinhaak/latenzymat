@@ -10,14 +10,8 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 %   - plotMaxSpikes: max number of spikes to plot (default: inf)
 %
 % history:
-% 6 August 2024
+%   6 January 2025 - v0.9
 %   - created by Robin Haak
-% 19 September 2024
-%   - code clean-up to make it more user friendly
-%   - added new default colormap
-%   - removed doSort flag
-% 14 November 2024
-%   - changed useMaxDur behavior
 
 %% prep
 %ensure correct orientation
