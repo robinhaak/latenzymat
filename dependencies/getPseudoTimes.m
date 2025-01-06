@@ -11,9 +11,11 @@ if ~exist('useMaxDur', 'var') || isempty(useMaxDur)
     eventTimes = sort(eventTimes);
     useMaxDur = min(diff(eventTimes));
 end
+
 if isscalar(useMaxDur), useMaxDur = sort([0 useMaxDur]); end
 assert(useMaxDur(2) > useMaxDur(1), [mfilename ':WrongMaxDurInput'], ...
     sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]', useMaxDur(1), useMaxDur(2)));
+
 if ~exist('discardEdges', 'var') || isempty(discardEdges)
     discardEdges = false;
 end

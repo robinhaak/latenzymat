@@ -34,7 +34,7 @@ end
 if useParPool
     parfor resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
-        [randD,randT] = calcTempOffset(spikeTimes,randEventT,useMaxDur);
+        [randD,randT] = calcTempDiff(spikeTimes,randEventT,useMaxDur);
         % peakRandD = findPeak(randD,randT,[],switchPosNeg);
     
         maxVal = max(randD);
@@ -54,7 +54,7 @@ if useParPool
 else
     for resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
-        [randD,randT] = calcTempOffset(spikeTimes,randEventT,useMaxDur);
+        [randD,randT] = calcTempDiff(spikeTimes,randEventT,useMaxDur);
         % peakRandD = findPeak(randD,randT,[],switchPosNeg);
  
         maxVal = max(randD);
