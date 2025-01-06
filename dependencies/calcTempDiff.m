@@ -3,26 +3,15 @@ function [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTime
 %   [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useMaxDur)
 %
 % history:
-% 2 Aug 2023
+%   6 January 2025 - v0.9
 %   - created by Robin Haak
-% 7 Aug 2023
-%   - minor changes to code
-% 9 Aug 2023
-%   - added jittering of repeating spike times
-% 28 Aug 2023
-%   - getRelSpikeTimes() is now called from within this function
-% 5 Feb 2024
-%   - updated jittering of repeating spiketimes, making it identical to getUniqueSpikes() v3.1.0 (a zetatest() subfunction by Jorrit Montijn)
-% 10 April 2024
-%   - useMaxDur instead of separate pre- and post-event time variables
-%   - changed computation of offset vector so that it now gives the deviation in fractions instead of spike counts
 
 %% prep
 tempDiff = [];
 spikeFracs = [];
 fracLinear = [];
 
-%get spikes relative to events
+%get spikes relative to events (and add two artificial spikes)
 relSpikeTimes = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,true);
 if isempty(relSpikeTimes)
     return
@@ -43,7 +32,8 @@ end
 
 %% get temporal offset vector
 %fractional spike positions
-spikeFracs = linspace(1/numel(relSpikeTimes),1,numel(relSpikeTimes))';
+numSpikes = numel(relSpikeTimes);
+spikeFracs = linspace(1/numSpikes,1,numSpikes)';
 
 %linear fractions
 fracLinear = (relSpikeTimes-relSpikeTimes(1))./(relSpikeTimes(end)-relSpikeTimes(1));

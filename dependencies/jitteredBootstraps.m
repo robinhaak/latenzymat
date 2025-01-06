@@ -22,7 +22,7 @@ resampD = cell(1,resampNum);
 resampT = cell(1,resampNum);
 peaksRandD = nan(1,resampNum);
 eventNum = numel(eventTimes);
-fullDuration = diff(useMaxDur);
+fullDuration = useMaxDur(2)-useMaxDur(1);
 jitterPerTrial = nan(eventNum,resampNum);
 
 %uniform jitters between jitterSize*[-tau,+tau]

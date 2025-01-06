@@ -1,39 +1,61 @@
-function [pVals,Z] = computePval(maxD,maxRandD,useDirectQuant)
-%compute (z-scored) p-value, syntax:
-%   [pVal,Z] = getPvalZ(maxD,maxRandD,useDirectQuant)
+function [pVals,Z] = computeZ(maxD,maxRandD,useDirectQuant)
+% compute p-values and z-scores for statistical significance testing, syntax:
+%   [pVals,Z] = computeZ(maxD,maxRandD,useDirectQuant)
 %
-%based on code by Jorrit Montijn
+% inputs:
+%   - maxD: [N x 1] Observed maximum values.
+%   - maxRandD: [M x 1] Randomized maximum values (used as null distribution).
+%   - useDirectQuant: Boolean, use empirical quantiles (default: false).
+%
+% outputs:
+%   - pVals: p-values for the observed values
+%   - Z: Z-scores for the observed values
+%
+% description:
+%   this function computes p-values and z-scores for a set of observed
+%   values (`maxD`) compared to a randomized null distribution (`maxRandD`), 
+%   supports two methods:
+%     1. empirical quantile-based p-values (if `useDirectQuant = true`).
+%     2. Gumbel distribution fitting for statistical testing (default).
+%
+% history:
+%   6 January 2025 - created by Robin Haak based on code by Jorrit Montijn.
 
-%check inputs
+%% check inputs
 if ~exist('useDirectQuant','var') || isempty(useDirectQuant)
     useDirectQuant = false;
 end
 
-%% calculate significance
-%find highest peak and retrieve value
+%ensure `maxRandD` is sorted and unique
 maxRandD = sort(unique(maxRandD));
-randMu = mean(maxRandD);
-randVar = var(maxRandD);
+if isempty(maxRandD)
+    error('computePval:EmptyMaxRandD', 'Input maxRandD must not be empty.');
+end
 
+
+%% calculate Significance
 if useDirectQuant
-    %calculate statistical significance using empirical quantiles
+    %empirical quantile-based p-values
     pVals = nan(size(maxD));
-    for i=1:numel(maxD)
-        if maxD<min(maxRandD) || isnan(maxD) || isempty(maxRandD)
-            value = 0;
-        elseif maxD>max(maxRandD) || isinf(maxD) || numel(maxRandD)<3
-            value = numel(maxRandD);
+    for i = 1:numel(maxD)
+        %handle edge cases
+        if maxD(i) < min(maxRandD) || isnan(maxD(i))
+            pVals(i) = 1; % p-value of 1 for low or invalid values
+        elseif maxD(i) > max(maxRandD) || isinf(maxD(i))
+            pVals(i) = 1/(1+numel(maxRandD)); % small p-value for high values
         else
-            value = interp1(maxRandD,1:numel(maxRandD),maxD);
+            %interpolate empirical quantile
+            value = interp1(maxRandD, 1:numel(maxRandD), maxD(i), 'linear', 'extrap');
+            pVals(i) = 1-(value/(1+numel(maxRandD)));
         end
-        pVals(i) = 1-(value/(1+numel(maxRandD)));
     end
-
-    %transform to output z-score
-    Z = -norminv(pVals/2);
+    
+    % transform to z-scores
+    Z = -norminv(pVals / 2);
 else
-    %calculate statistical significance using Gumbel distribution
-    [pVals,Z] = getGumbel(randMu,randVar,maxD);
+    % Gumbel distribution-based p-values and z-scores
+    randMu = mean(maxRandD);
+    randVar = var(maxRandD);
+    [pVals, Z] = getGumbel(randMu, randVar, maxD);
 end
 end
-

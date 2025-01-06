@@ -197,7 +197,7 @@ while doContinue
     peaksRandSub = peaksRand-meanRandDiff;
 
     %compute significance
-    [pValPeak,peakZ] = computePval(abs(realPeakSub),peaksRandSub(~isnan(peaksRandSub)),useDirectQuant);
+    [pValPeak,peakZ] = computeZ(abs(realPeakSub),peaksRandSub(~isnan(peaksRandSub)),useDirectQuant);
 
     %store
     if ~isnan(realPeakT)

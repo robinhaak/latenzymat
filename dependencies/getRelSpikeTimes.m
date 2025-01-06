@@ -12,17 +12,8 @@ function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes
 %   - spikesPerEvent: relative spike times per event (s), sorted
 %
 % history:
-% 1 Aug 2023
+%   6 January 2025 - v0.9
 %   - created by Robin Haak
-% 28 Aug 2023
-%   - added spikesPerEvent as (optional) output
-% 5 Feb 2024
-%   - minor changes to code
-% 9 April 2024
-%   - added option to add two artificial spikes, at beginning and end
-%   - useMaxDur instead of separate pre- and post-event time variables
-% 14 November 2024
-%   - changed useMaxDur behavior
 
 %% prep
 %ensure correct orientation
@@ -37,34 +28,22 @@ end
 
 if isscalar(useMaxDur), useMaxDur = sort([0 useMaxDur]); end
 assert(useMaxDur(2)>useMaxDur(1),[mfilename ':WrongMaxDurInput'],...
-    sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
+    sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]',...
+    useMaxDur(1),useMaxDur(2)));
 
 if ~exist('addArtifSpikes','var') || isempty(addArtifSpikes)
     addArtifSpikes = false;
 end
 
 %% compute relative spike times
-numEvents = length(eventTimes);
-spikesPerEvent = cell(numEvents,1);
-for event = 1:numEvents
-    startTime = eventTimes(event);
-    stopTime = startTime+useMaxDur(end);
-    spikesPerEvent{event} = ...
-        spikeTimes(spikeTimes>(startTime+useMaxDur(1)) & spikeTimes<stopTime)-startTime;
-end
+spikesPerEvent = arrayfun(@(x) spikeTimes(spikeTimes > (x+useMaxDur(1)) & spikeTimes < (x+useMaxDur(2)))-x, ...
+    eventTimes,'UniformOutput',false);
 
-%sort ascending
-spikesPerEvent = cellfun(@(x)sort(x),spikesPerEvent,'UniformOutput',false);
-relSpikeTimes = vertcat(spikesPerEvent{:});
-relSpikeTimes = sort(relSpikeTimes);
+%concat and sort
+relSpikeTimes = sort(vertcat(spikesPerEvent{:}));
 
 %% if requested, add artificial spikes to cover full epoch
 if addArtifSpikes && ~isempty(relSpikeTimes)
-    if relSpikeTimes(1) > useMaxDur(1)
-        relSpikeTimes = [useMaxDur(1); relSpikeTimes];
-    end
-    if relSpikeTimes(end) < useMaxDur(end)
-        relSpikeTimes = [relSpikeTimes; useMaxDur(2)];
-    end
+    relSpikeTimes = unique([useMaxDur(1); relSpikeTimes; useMaxDur(2)]);
 end
 end
