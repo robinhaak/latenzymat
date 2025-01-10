@@ -1,5 +1,5 @@
 function cmap = getAbyss(n)
-%GETABYSS generates the abyss colormap.
+%GETABYSS generates the abyss colormap introduced in R2023b
 %   cmap = getAbyss(n) returns an n-by-3 colormap array.
 %
 %   if n is not provided, a default of 256 colors is used.

@@ -35,27 +35,9 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %       - handleFigs: figure handles
 %
 % history:
-% 11 April 2024
-% - created by Robin Haak
-% 23 April 2024
-% - cleaned up the code
-% 8 August 2024
-% - worked on plotting function
-% 12 August 2024
-% - worked on computation of significance
-% 16 September 2024
-% - changed parallel pool behavior: parfor enabled by default when parpool is active
-% 18 September 2024
-% - added allowNegative flag, to allow negative latencies (e.g., for behavioral events)
-% 20 September 2024
-% - made sure that code runs when Parallel Computing Toolbox is not present
-% 14 November 2024
-% - worked on the estimation of negative latencies
-% - changed useMaxDur behavior to better accomodate estimation of negative latencies
-% 30 December 2024
-% - removed separate function for peak detection, using min/max instead
-% 5 January 2025
-% - changed allowNegative to restrictNeg
+%   v0.9 - 6 January 2025
+%   - created by Robin Haak
+
 
 %% prep
 %ensure correct orientation
