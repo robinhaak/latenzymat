@@ -12,7 +12,7 @@ function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes
 %   - spikesPerEvent: relative spike times per event (s), sorted
 %
 % history:
-%   6 January 2025 - v0.9
+%   v0.9 - 6 January 2025
 %   - created by Robin Haak
 
 %% prep

@@ -10,7 +10,7 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 %   - plotMaxSpikes: max number of spikes to plot (default: inf)
 %
 % history:
-%   6 January 2025 - v0.9
+%   v0.9 - 6 January 2025
 %   - created by Robin Haak
 
 %% prep

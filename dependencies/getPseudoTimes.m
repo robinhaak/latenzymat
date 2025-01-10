@@ -3,7 +3,7 @@ function [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventT
 %   [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useMaxDur,discardEdges)
 %
 % history:
-%   6 January 2025 - v0.9
+%   v0.9 - 6 January 2025
 %   - created by Robin Haak
 
 %ensure correct orientation

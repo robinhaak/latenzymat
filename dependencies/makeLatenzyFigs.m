@@ -3,14 +3,8 @@ function figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useMaxDur,m
 % Robin Haak, 2024
 %
 % history:
-% 9 August 2024
-% - created by Robin Haak
-% 16 September 2024
-% - mean subtraction for the real + shuffles plot
-% 20 September 2024
-% - code clean-up
-% 9 December 2024
-% - changed plot colors
+%   v0.9 - 6 January 2025
+%   - created by Robin Haak
 
 %% prep
 %#ok<*AGROW>

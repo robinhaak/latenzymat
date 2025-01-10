@@ -3,14 +3,8 @@ function [peaksRandD,resampD,resampT] = jitteredBootstraps(spikeTimes,eventTimes
 %   [peaksRandD,randD,randT] = jitteredBootstraps(spikeTimes,eventTimes,preEventTime,postEventTime,resampNum,jitterSize,switchPosNeg,useParPool)
 %
 % history:
-% 9 Feb 2024
+%   v0.9 - 6 January 2025
 %   - created by Robin Haak
-% 15 Feb 2024
-%   - cleanup of code
-% 10 April 2024
-%   - useMaxDur instead of separate pre- and post-event time variables
-% 30 December 2024
-% - removed separate function for peak detection, using min/max instead
 
 %% prep
 %ensure correct orientation

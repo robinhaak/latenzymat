@@ -3,7 +3,7 @@ function [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTime
 %   [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useMaxDur)
 %
 % history:
-%   6 January 2025 - v0.9
+%   v0.9 - 6 January 2025
 %   - created by Robin Haak
 
 %% prep
@@ -40,5 +40,5 @@ fracLinear = (relSpikeTimes-relSpikeTimes(1))./(relSpikeTimes(end)-relSpikeTimes
 
 %compute difference
 tempDiff = spikeFracs-fracLinear;
-% tempDiff = tempDiff-mean(tempDiff); mean is subtracted in main latenzy() function
+% tempDiff = tempDiff-mean(tempDiff); % mean is subtracted in main latenzy() function
 end
