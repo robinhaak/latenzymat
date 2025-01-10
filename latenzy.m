@@ -8,7 +8,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   - useMaxDur: scalar or [N x 2], time to include after/around event times (s) (default: [0 min(diff(eventtimes))])
 %   - resampNum: integer, number of resamples (default: 100)
 %   - jitterSize: scalar, temporal jitter window relative to useMaxDur (s) (default: 2)
-%   - minPeakZ: scalar, minimal z-stat for significance (default: 1.96)
+%   - minPeakZ: scalar, minimal z-score for significance (default: 1.96)
 %   - doStitch: boolean flag, perform data stitching, highly recommended! (default: true)
 %   - useParPool: boolean flag, use parallel pool for resamples (default: true, but only when parallel pool is already active!)
 %   - useDirectQuant: boolean flag, use the empirical null-distribution rather than the Gumbel approximation (default: false)

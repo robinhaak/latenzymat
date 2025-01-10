@@ -69,7 +69,7 @@ scatter(peakTimes(latenzyIdx),peakVals(latenzyIdx),markerSize,'x','MarkerEdgeCol
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Offset from linear (Δfraction)');
+ylabel('Deviation (Δfraction)');
 title('\color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated onset');
 
 %for iteration w/latency, plot real + shuffles
@@ -83,7 +83,7 @@ if latenzyIdx(1),xlim(useMaxDur);
 else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
-ylabel('Offset from lin. (Δfrac.)');
+ylabel('Deviation (Δfraction)');
 title(sprintf('Real data + shuffles, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
