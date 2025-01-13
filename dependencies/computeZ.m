@@ -46,17 +46,17 @@ if useDirectQuant
             pVals(i) = 1/(1+numel(maxRandD)); % small p-value for high values
         else
             %interpolate empirical quantile
-            value = interp1(maxRandD, 1:numel(maxRandD), maxD(i), 'linear', 'extrap');
+            value = interp1(maxRandD, 1:numel(maxRandD),maxD(i),'linear','extrap');
             pVals(i) = 1-(value/(1+numel(maxRandD)));
         end
     end
     
-    % transform to z-scores
+    %transform to z-scores
     Z = -norminv(pVals / 2);
 else
-    % Gumbel distribution-based p-values and z-scores
+    %Gumbel distribution-based p-values and z-scores
     randMu = mean(maxRandD);
     randVar = var(maxRandD);
-    [pVals, Z] = getGumbel(randMu, randVar, maxD);
+    [pVals,Z] = getGumbel(randMu,randVar,maxD);
 end
 end

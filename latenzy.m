@@ -2,7 +2,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % get event-related response latency, syntax:
 %   [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNeg,makePlots)
 %   
-%   input:
+%   inputs:
 %   - spikeTimes: [S x 1]: spike times (s)
 %   - eventTimes: [T x 1]: event (start) times (s)
 %   - useMaxDur: scalar or [N x 2], time to include after/around event times (s) (default: [0 min(diff(eventtimes))])
@@ -15,7 +15,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   - restrictNeg: boolean flag, restrict negative latencies (default: false)
 %   - makePlots: integer, plotting switch (0=none, 1=raster+traces, 2=traces only, default: 0)
 %
-%   output:
+%   outputs:
 %   - respLatency: response latency (s) (NaN when no latency could be estimated)
 %   - sLatenzy: structure with fields:
 %       - latency: response latency (s)
@@ -158,16 +158,18 @@ while doContinue
         pseudoEventTimes = eventTimes;
     end
 
-    %get largest deviation
+    %get temporal deviation
     [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff(pseudoSpikeTimes,pseudoEventTimes,thisMaxDur);
-    [maxVal,maxIdx] = max(realDiff);
-    [minVal,minIdx] = min(realDiff);
-    if abs(minVal) >= abs(maxVal)
-        realPeakV = minVal;
-        realPeakIdx = minIdx;
+    
+    %get largest deviation
+    [peakPos,posPeakIdx] = max(realDiff);
+    [peakNeg,negPeakIdx] = min(realDiff);
+    if abs(peakNeg) >= abs(peakPos)
+        realPeakV = peakNeg;
+        realPeakIdx = negPeakIdx;
     else
-        realPeakV = maxVal;
-        realPeakIdx = maxIdx;
+        realPeakV = peakPos;
+        realPeakIdx = posPeakIdx;
     end
     realPeakT = realTime(realPeakIdx);
     realPeakSub = realPeakV-mean(realDiff);

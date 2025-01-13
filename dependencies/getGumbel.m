@@ -2,12 +2,12 @@ function [dblP,dblZ,dblMode,dblBeta] = getGumbel(dblE,dblV,dblX)
 	%getGumbel Calculate p-value and z-score for maximum value of N samples drawn from Gaussian
 	%   [dblP,dblZ] = getGumbel(dblE,dblV,dblX)
 	%
-	%	input:
+	%	inputs:
 	%	- dblE: mean of distribution of maximum values
 	%	- dblV: variance of distribution of maximum values
 	%	- dblX: maximum value to express in quantiles of Gumbel
 	%
-	%	output:
+	%	outputs:
 	%	- dblP; p-value for dblX (chance that sample originates from distribution given by dblE/dblV)
 	%	- dblZ; z-score corresponding to P
 	%

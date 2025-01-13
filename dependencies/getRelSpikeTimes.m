@@ -1,13 +1,13 @@
 function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,addArtifSpikes)
 % create a vector of spike times relative to event times, syntax:
 %   [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,addArtifSpks)
-%   input:
+%   inputs:
 %   - spikeTimes [S x 1]: spike times (s)
 %   - eventTimes [T x 1]: event (start) times (s)
 %   - useMaxDur: scalar or [pre post], time to include after/around event times (s)
 %   - addArtifSpikes: boolean, add artificial spikes at beginning and end of epoch (default: true)
 %
-%   output:
+%   outputs:
 %   - relSpikeTimes: spike times relative to events (s), sorted
 %   - spikesPerEvent: relative spike times per event (s), sorted
 %

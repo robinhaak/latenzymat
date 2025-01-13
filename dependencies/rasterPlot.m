@@ -1,7 +1,7 @@
 function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plotMaxSpikes)
 % make a raster plot, syntax:
 %   rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, color, plotMaxSpikes)
-%   input:
+%   inputs:
 %   - spikeTimes [S x 1]: spike times (s)
 %   - eventTimes [T x 1]: event (start) times (s)
 %   - useMaxDur: scalar or [pre post], time to include after/around event times (s)
