@@ -160,6 +160,9 @@ while doContinue
 
     %get temporal deviation
     [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff(pseudoSpikeTimes,pseudoEventTimes,thisMaxDur);
+    if numel(realDiff) < 3
+        return
+    end
     
     %get largest deviation
     [peakPos,posPeakIdx] = max(realDiff);
