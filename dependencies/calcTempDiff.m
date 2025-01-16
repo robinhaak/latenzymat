@@ -20,14 +20,14 @@ end
 %introduce minimal jitter to repeating spike times (if any)
 relSpikeTimes = sort(relSpikeTimes);
 uniqueOffset = max(eps(relSpikeTimes));
-indRepeat = [false;diff(relSpikeTimes)<uniqueOffset];
-while any(indRepeat)
-    notUnique = relSpikeTimes(indRepeat);
+idxRepeat = [false;diff(relSpikeTimes)<uniqueOffset];
+while any(idxRepeat)
+    notUnique = relSpikeTimes(idxRepeat);
     addJitter = cat(1,1+9*rand([numel(notUnique),1]),-1-9*rand([numel(notUnique),1]));
     addJitter = uniqueOffset*addJitter(randperm(numel(addJitter),numel(notUnique)));
-    relSpikeTimes(indRepeat) = relSpikeTimes(indRepeat)+addJitter;
+    relSpikeTimes(idxRepeat) = relSpikeTimes(idxRepeat)+addJitter;
     relSpikeTimes = sort(relSpikeTimes);
-    indRepeat = [false;diff(relSpikeTimes)<uniqueOffset];
+    idxRepeat = [false;diff(relSpikeTimes)<uniqueOffset];
 end
 
 %% get temporal offset vector
