@@ -165,21 +165,21 @@ while doContinue
     end
     
     %get largest deviation
-    [peakPos,posPeakIdx] = max(realDiff);
-    [peakNeg,negPeakIdx] = min(realDiff);
-    if abs(peakNeg) >= abs(peakPos)
-        realPeakV = peakNeg;
-        realPeakIdx = negPeakIdx;
+    [maxDiff,maxIdx] = max(realDiff);
+    [minDiff,minIdx] = min(realDiff);
+    if abs(minDiff) >= abs(maxDiff)
+        realMaxD = minDiff;
+        realMaxIdx = minIdx;
     else
-        realPeakV = peakPos;
-        realPeakIdx = posPeakIdx;
+        realMaxD = maxDiff;
+        realMaxIdx = maxIdx;
     end
-    realPeakT = realTime(realPeakIdx);
-    realPeakSub = realPeakV-mean(realDiff);
+    realPeakT = realTime(realMaxIdx);
+    realPeakSub = realMaxD-mean(realDiff);
 
     %run bootstraps
     [peaksRand,randDiff,randTime] = jitteredBootstraps(pseudoSpikeTimes,pseudoEventTimes,...
-        thisMaxDur,resampNum,jitterSize,0,useParPool);
+        thisMaxDur,resampNum,jitterSize,useParPool);
     meanRandDiff = cellfun(@(x)mean(x),randDiff);
     peaksRandSub = peaksRand-meanRandDiff;
 
@@ -188,7 +188,7 @@ while doContinue
 
     %store
     if ~isnan(realPeakT)
-        peakValsAgg(1,thisIter) = realPeakV;
+        peakValsAgg(1,thisIter) = realMaxD;
         peakTimesAgg(1,thisIter) = realPeakT;
         realFracAgg{1,thisIter} = spikeFracs;
         fracLinAgg{1,thisIter} = fracLinear;

@@ -1,6 +1,6 @@
-function [peaksRandD,resampD,resampT] = jitteredBootstraps(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,switchPosNeg,useParPool)
+function [peaksRandD,resampD,resampT] = jitteredBootstraps(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,useParPool)
 % run bootstraps by jittering event times, syntax:
-%   [peaksRandD,randD,randT] = jitteredBootstraps(spikeTimes,eventTimes,preEventTime,postEventTime,resampNum,jitterSize,switchPosNeg,useParPool)
+%   [peaksRandD,randD,randT] = jitteredBootstraps(spikeTimes,eventTimes,preEventTime,postEventTime,resampNum,jitterSize,useParPool)
 %
 % history:
 %   v0.9 - 6 January 2025
@@ -29,39 +29,39 @@ if useParPool
     parfor resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
         [randD,randT] = calcTempDiff(spikeTimes,randEventT,useMaxDur);
-        % peakRandD = findPeak(randD,randT,[],switchPosNeg);
-    
+        
+        %get largest deviation
         maxVal = max(randD);
         minVal = min(randD);
         if abs(minVal) >= abs(maxVal)
-            peakRandD = minVal;
+            maxRandD = minVal;
         else
-            peakRandD = maxVal;
+            maxRandD = maxVal;
         end
 
         resampD{resamp} = randD;
         resampT{resamp} = randT;
-        if ~isnan(peakRandD)
-            peaksRandD(resamp) = peakRandD;
+        if ~isnan(maxRandD)
+            peaksRandD(resamp) = maxRandD;
         end
     end
 else
     for resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
         [randD,randT] = calcTempDiff(spikeTimes,randEventT,useMaxDur);
-        % peakRandD = findPeak(randD,randT,[],switchPosNeg);
  
+        %get largest deviation
         maxVal = max(randD);
         minVal = min(randD);
         if abs(minVal) >= abs(maxVal)
-            peakRandD = minVal;
+            maxRandD = minVal;
         else
-            peakRandD = maxVal;
+            maxRandD = maxVal;
         end
         resampD{resamp} = randD;
         resampT{resamp} = randT;
-        if ~isnan(peakRandD)
-            peaksRandD(resamp) = peakRandD;
+        if ~isnan(maxRandD)
+            peaksRandD(resamp) = maxRandD;
         end
     end
 end
