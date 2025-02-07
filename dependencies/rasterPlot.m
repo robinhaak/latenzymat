@@ -51,7 +51,7 @@ if numel(spikeTimes) > plotMaxSpikes
 end
 
 %% make raster plot
-cla;
+% cla;
 hold on;
 offset = 0;
 if numTrialType > 1

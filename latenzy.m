@@ -12,7 +12,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   - doStitch: boolean flag, perform data stitching, highly recommended! (default: true)
 %   - useParPool: boolean flag, use parallel pool for resamples (default: true, but only when parallel pool is already active!)
 %   - useDirectQuant: boolean flag, use the empirical null-distribution rather than the Gumbel approximation (default: false)
-%   - restrictNeg: boolean flag, restrict negative latencies (default: false)
+%   - restrictNeg: boolean flag, restrict negative latencies (default: true)
 %   - makePlots: integer, plotting switch (0=none, 1=raster+traces, 2=traces only, default: 0)
 %
 %   outputs:
@@ -37,7 +37,6 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
-
 
 %% prep
 %ensure correct orientation
@@ -109,13 +108,16 @@ end
 
 %allowNegative
 if ~exist('restrictNegative','var') || isempty(restrictNeg)
-    restrictNeg = false;
+    restrictNeg = true;
 end
 
 %get makePlots
 if ~exist('makePlots','var') || isempty(makePlots)
     makePlots = 0;
 end
+
+%enable warning for late
+giveLateWarn = true;
 
 %% MAIN
 %pre-allocate
@@ -216,6 +218,11 @@ end
 thesePeakTimes = peakTimesAgg(logical(keepPeaks));
 if ~isempty(thesePeakTimes)
     respLatency = thesePeakTimes(end);
+
+    %warning
+    if respLatency > (useMaxDur(1)+sum(abs(useMaxDur))/2) && giveLateWarn
+        warning('Estimated latency is quite late in the window (>T/2), consider plotting and/or adjusting window');
+    end
 else
     return
 end
