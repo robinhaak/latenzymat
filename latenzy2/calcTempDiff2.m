@@ -18,28 +18,28 @@ relSpikeTimesAgg = [useMaxDur(1);sort(relSpikeTimesAgg(:));useMaxDur(2)];
 
 %% get temporal difference vector
 %cond1 goes to S1_n/T1_n; cond2 goes to S2_n/T2_n
-sp1 = numel(relSpikeTimes1);
-sp2 = numel(relSpikeTimes2);
-T1 = numel(spikesPerTrial1);
-T2 = numel(spikesPerTrial2);
+numSp1 = numel(relSpikeTimes1);
+numSp2 = numel(relSpikeTimes2);
+numTr1 = numel(spikesPerTrial1);
+numTr2 = numel(spikesPerTrial2);
 
 %spike fraction #1
-uniqueSpikeFracs1 = (1:sp1)'/T1;
+uniqueSpikeFracs1 = (1:numSp1)'/numTr1;
 if useFastInterp
-    spikeFrac1 = lininterp1f([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;sp1/T1],relSpikeTimesAgg,nan)';
+    spikeFrac1 = lininterp1f([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;numSp1/numTr1],relSpikeTimesAgg,nan)';
 else
-    spikeFrac1 = interp1([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;sp1/T1],relSpikeTimesAgg);
+    spikeFrac1 = interp1([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;numSp1/numTr1],relSpikeTimesAgg);
 end
-spikeFrac1 = fillnans(spikeFrac1,sp1,T1);
+spikeFrac1 = fillnans(spikeFrac1,numSp1,numTr1);
 
 %spike fraction #2
-uniqueSpikeFracs2 = (1:sp2)'/T2;
+uniqueSpikeFracs2 = (1:numSp2)'/numTr2;
 if useFastInterp
-    spikeFrac2 = lininterp1f([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;sp2/T2],relSpikeTimesAgg,nan)';
+    spikeFrac2 = lininterp1f([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;numSp2/numTr2],relSpikeTimesAgg,nan)';
 else
-    spikeFrac2 = interp1([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;sp2/T2],relSpikeTimesAgg);
+    spikeFrac2 = interp1([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;numSp2/numTr2],relSpikeTimesAgg);
 end
-spikeFrac2 = fillnans(spikeFrac2,sp2,T2);
+spikeFrac2 = fillnans(spikeFrac2,numSp2,numTr2);
 
 %take difference
 fracDiff = spikeFrac1-spikeFrac2;

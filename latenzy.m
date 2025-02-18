@@ -180,7 +180,7 @@ while doContinue
     realPeakSub = realMaxD-mean(realDiff);
 
     %run bootstraps
-    [peaksRand,randDiff,randTime] = jitteredBootstraps(pseudoSpikeTimes,pseudoEventTimes,...
+    [peaksRand,randDiff,randTime] = runJitterBootstraps(pseudoSpikeTimes,pseudoEventTimes,...
         thisMaxDur,resampNum,jitterSize,useParPool);
     meanRandDiff = cellfun(@(x)mean(x),randDiff);
     peaksRandSub = peaksRand-meanRandDiff;

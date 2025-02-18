@@ -169,18 +169,14 @@ end
 while doContinue
     thisIter = thisIter+1;
 
-    %get spikes per trial
+    %get spikes per event
     thisMaxDur = [0 1];
-    [~,spikesPerTrial1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
-    [~,spikesPerTrial2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
+    [~,spikesPerEvent1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
+    [~,spikesPerEvent2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
 
     %get temporal difference
-    % [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff2(spikeTimes,eventT,thisMaxDur);
-    % if numel(realDiff) < 3
-    %     return
-    % end
-
-    [] = calcTempDiff2(spikesPerTrial1,spikesPerTrial2,thisMaxDur,useFastInterp);
+    [realDiff,realTime,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
+        calcTempDiff2(spikesPerEvent1,spikesPerEvent2,useMaxDur,useFastInterp);
     if numel(realDiff) < 3
         return
     end
