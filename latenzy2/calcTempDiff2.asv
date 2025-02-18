@@ -1,4 +1,4 @@
-function [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
+function [fracDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
     calcTempDiff2(spikesPerTrial1,spikesPerTrial2,useMaxDur,useFastInterp)
 % compute temporal offset vectors, syntax:
 % [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
@@ -45,9 +45,17 @@ spikeFrac2 = fillnans(spikeFrac2,sp2,T2);
 fracDiff = spikeFrac1-spikeFrac2;
 
 %subtract linear
-fracLinear = fracDiff(1)+(fracDiff(end)-fracDiff(1))*...
-    (relSpikeTimesAgg-relSpikeTimesAgg(1))/(relSpikeTimesAgg(end)-relSpikeTimesAgg(1));
-tempDiff = fracDiff-fracLinear;
-%tempDiff = tempDiff-mean(tempDiff);
+fracLinear
+
+
+x1 = relSpikeTimesAgg(1);
+x2 = relSpikeTimesAgg(end);
+y1 = fracDiff(1);
+y2 = fracDiff(end);
+
+lin = y1 + (y2 - y1) * (relSpikeTimesAgg - x1) / (x2 - x1);
+
+tempDiffCorr = fracDiff-lin;
+
 
 end

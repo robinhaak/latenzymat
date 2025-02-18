@@ -1,4 +1,4 @@
-function [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes1,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
+function [respLatency,sLatenzy] = latenzy2(spikeTimes1,spikeTimes2,eventTimes1,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx, syntax:
 % [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)%   
 %   inputs:
@@ -39,7 +39,12 @@ function [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes1,eventTimes2,us
 
 %% prep
 %ensure correct orientation
-spikeTimes = spikeTimes(:);
+spikeTimes1 = spikeTimes1(:);
+if isempty(spikeTimes2)
+    spikeTimes2 = spikeTimes1;
+else
+    spikeTimes2 = spikeTimes2(:);
+end
 eventTimes1 = eventTimes1(:);
 eventTimes2 = eventTimes2(:);
 
@@ -159,19 +164,27 @@ catch
     end
 end
 
+%%
 %run
 while doContinue
     thisIter = thisIter+1;
 
- 
-    
+    %get spikes per trial
+    thisMaxDur = [0 1];
+    [~,spikesPerTrial1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
+    [~,spikesPerTrial2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
 
-    %get temporal deviation
-    [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff2(spikeTimes,eventT,thisMaxDur);
+    %get temporal difference
+    % [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff2(spikeTimes,eventT,thisMaxDur);
+    % if numel(realDiff) < 3
+    %     return
+    % end
+
+    [] = calcTempDiff2(spikesPerTrial1,spikesPerTrial2,thisMaxDur,useFastInterp);
     if numel(realDiff) < 3
         return
     end
-    
+
     %get largest deviation
     [maxDiff,maxIdx] = max(realDiff);
     [minDiff,minIdx] = min(realDiff);
