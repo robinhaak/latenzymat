@@ -1,7 +1,6 @@
-function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNeg,makePlots)
-% get event-related response latency, syntax:
-%   [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNeg,makePlots)
-%   
+function [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes1,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx, syntax:
+% [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)%   
 %   inputs:
 %   - spikeTimes: [S x 1]: spike times (s)
 %   - eventTimes: [T x 1]: event (start) times (s)
@@ -38,16 +37,17 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
 
-
 %% prep
 %ensure correct orientation
 spikeTimes = spikeTimes(:);
-eventTimes = eventTimes(:);
+eventTimes1 = eventTimes1(:);
+eventTimes2 = eventTimes2(:);
 
 %get useMaxDur
 if ~exist('useMaxDur','var') || isempty(useMaxDur)
-    eventTimes = sort(eventTimes);
-    useMaxDur = min(diff(eventTimes));
+    eventTimes1 = sort(eventTimes1);
+    eventTimes2 = sort(eventTimes2);
+    useMaxDur = min([min(diff(eventTimes1)) min(diff(eventTimes2))]);
 end
 if isscalar(useMaxDur)
     useMaxDur = sort([0 useMaxDur]);
@@ -68,24 +68,12 @@ end
 
 %get resampNum
 if ~exist('resampNum','var') || isempty(resampNum)
-    resampNum = 100;
+    resampNum = 100; %zeta does 250?
 end
-
-%get jitterSize
-if ~exist('jitterSize','var') || isempty(jitterSize)
-    jitterSize = 2;
-end
-assert(jitterSize>0,[mfilename ':WrongJitterInput'], ...
-    sprintf('jitterSize must be a positive scalar, you requested %.3f',jitterSize));
 
 %get peakZ
 if ~exist('minPeakZ','var') || isempty(minPeakZ)
     minPeakZ = 1.96; %corresponds to alpha=0.05
-end
-
-%get doStitch
-if ~exist('doStitch','var') || isempty(doStitch)
-    doStitch = true;
 end
 
 %get useParPool
@@ -117,6 +105,9 @@ if ~exist('makePlots','var') || isempty(makePlots)
     makePlots = 0;
 end
 
+%enable warning for late
+giveLateWarn = true;
+
 %% MAIN
 %pre-allocate
 %#ok<*AGROW>
@@ -145,21 +136,37 @@ if restrictNeg
     minLatency = 0;
 end
 
+% check if we can use the fast interpolation function
+useFastInterp = false;
+try
+    vecTest = lininterp1f([0;0.25;1],[0;0.5;1],[-1;0;0.1;0.5;1],nan);
+    if isnan(vecTest(1)) && all(vecTest(2:5)==[0 0.2 2/3 1])
+        useFastInterp = true;
+    else
+        error('lininterp1f gives incorrect output');
+    end
+catch
+    try
+        mex('lininterp1f.c');
+        vecTest = lininterp1f([0;0.25;1],[0;0.5;1],[-1;0;0.1;0.5;1],nan);
+        if isnan(vecTest(1)) && all(vecTest(2:5)==[0 0.2 2/3 1])
+            useFastInterp = true;
+        else
+            error('lininterp1f gives incorrect output');
+        end
+    catch
+        useParPool = false;
+    end
+end
+
 %run
 while doContinue
     thisIter = thisIter+1;
 
-    %perform data-stitching
-    if doStitch
-        discardEdges = true;
-        [pseudoSpikeTimes,pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,thisMaxDur,discardEdges);
-    else
-        pseudoSpikeTimes = spikeTimes;
-        pseudoEventTimes = eventTimes;
-    end
+    %REDUCE SPIKES??????
 
     %get temporal deviation
-    [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff(pseudoSpikeTimes,pseudoEventTimes,thisMaxDur);
+    [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff2(spikeTimes,eventT,thisMaxDur);
     if numel(realDiff) < 3
         return
     end
@@ -218,10 +225,8 @@ if ~isempty(thesePeakTimes)
     respLatency = thesePeakTimes(end);
 
     %warning
-    if respLatency < (useMaxDur(1)+sum(abs(useMaxDur))/2)
-        warning('Estimated latency is quite late in the window (')
-
-
+    if respLatency > (useMaxDur(1)+sum(abs(useMaxDur))/2) && giveLateWarn
+        warning('Estimated latency is quite late in the window (>T/2), consider plotting and/or adjusting window');
     end
 else
     return

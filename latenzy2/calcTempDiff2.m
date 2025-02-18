@@ -1,4 +1,4 @@
-function [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useMaxDur)
+function [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff2(spikeTimes,eventTimes1,eventTimes2,useMaxDur,useFastIn)
 % compute temporal offset vector, syntax:
 %   [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useMaxDur)
 %
@@ -33,18 +33,13 @@ end
 %% get temporal offset vector
 %fractional spike positions
 numSpikes = numel(relSpikeTimes);
-% spikeFracs = linspace(1/numSpikes,1,numSpikes)';
-
-spikeFracs = 1:length(relSpikeTimes);
-spikeFracs = spikeFracs(:);
+spikeFracs = linspace(1/numSpikes,1,numSpikes)';
 
 %linear fractions
-% fracLinear = (relSpikeTimes-relSpikeTimes(1))./(relSpikeTimes(end)-relSpikeTimes(1));
-fracLinear = (relSpikeTimes - relSpikeTimes(1)) * length(relSpikeTimes) / (relSpikeTimes(end)-relSpikeTimes(1));
+fracLinear = (relSpikeTimes-relSpikeTimes(1))./(relSpikeTimes(end)-relSpikeTimes(1));
+
 %compute difference
 tempDiff = spikeFracs-fracLinear;
 % tempDiff = tempDiff-mean(tempDiff); % mean is subtracted in main latenzy() function
-
-
 
 end

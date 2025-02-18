@@ -1,4 +1,4 @@
-function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,addArtifSpikes)
+function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,addArtifSpikes,returnCells)
 % create a vector of spike times relative to event times, syntax:
 %   [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,addArtifSpks)
 %   inputs:
@@ -14,6 +14,8 @@ function [relSpikeTimes,spikesPerEvent] = getRelSpikeTimes(spikeTimes,eventTimes
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
+%   v0.9.1 - 18 February 2025
+%   - added option to return all cells
 
 %% prep
 %ensure correct orientation
@@ -35,6 +37,10 @@ if ~exist('addArtifSpikes','var') || isempty(addArtifSpikes)
     addArtifSpikes = false;
 end
 
+if ~exist('returnCells','var') || isempty(returnCells)
+    returnCells = false;
+end
+
 %% compute relative spike times
 spikesPerEvent = arrayfun(@(x) spikeTimes(spikeTimes > (x+useMaxDur(1)) & spikeTimes < (x+useMaxDur(2)))-x, ...
     eventTimes,'UniformOutput',false);
@@ -46,4 +52,8 @@ relSpikeTimes = sort(vertcat(spikesPerEvent{:}));
 if addArtifSpikes && ~isempty(relSpikeTimes)
     relSpikeTimes = unique([useMaxDur(1); relSpikeTimes; useMaxDur(2)]);
 end
+
+%% optionally, return as cell
+if returnCells
+    relSpikeTimes = {relSpikeTimes};
 end
