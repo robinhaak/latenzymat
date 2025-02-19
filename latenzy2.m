@@ -1,4 +1,4 @@
-function [respLatency,sLatenzy] = latenzy2(spikeTimes1,spikeTimes2,eventTimes1,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
+function [respLatency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx, syntax:
 % [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)%   
 %   inputs:
@@ -73,7 +73,7 @@ end
 
 %get resampNum
 if ~exist('resampNum','var') || isempty(resampNum)
-    resampNum = 100; %zeta does 250?
+    resampNum = 500; %zeta does 250?
 end
 
 %get peakZ
@@ -120,6 +120,7 @@ respLatency = nan;
 peakTimesAgg = [];
 peakValsAgg = [];
 realFracAgg = {};
+fracDiffAgg = {};
 fracLinAgg = {};
 realDiffAgg = {};
 realTimeAgg = {};
@@ -133,7 +134,7 @@ keepPeaks = [];
 thisMaxDur = useMaxDur;
 doContinue = true;
 thisIter = 0;
-sLatenzy = struct;
+sLatenzy2 = struct;
 
 %check if negative latencies are restricted
 minLatency = useMaxDur(1);
@@ -167,14 +168,14 @@ end
 %%
 %run
 while doContinue
-    thisIter = thisIter+1;
+    thisIter = thisIter+1
 
     %get spikes per event
     [~,spikesPerEvent1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
     [~,spikesPerEvent2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
 
     %get temporal difference
-    [realDiff,realTime,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
+    [realDiff,realTime,spikeFrac1,~,spikeFrac2,~,fracDiff,fracLinear] = ...
         calcTempDiff2(spikesPerEvent1,spikesPerEvent2,thisMaxDur,useFastInterp);
     if numel(realDiff) < 3
         return
@@ -194,8 +195,8 @@ while doContinue
     realPeakSub = realMaxD-mean(realDiff);
 
     %run bootstraps
-    [peaksRand,randDiff,randTime] = jitteredBootstraps(pseudoSpikeTimes,pseudoEventTimes,...
-        thisMaxDur,resampNum,jitterSize,useParPool);
+    [peaksRand,randDiff,randTime] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,...
+        useMaxDur,resampNum,useParPool,useFastInterp);
     meanRandDiff = cellfun(@(x)mean(x),randDiff);
     peaksRandSub = peaksRand-meanRandDiff;
 
@@ -206,7 +207,9 @@ while doContinue
     if ~isnan(realPeakT)
         peakValsAgg(1,thisIter) = realMaxD;
         peakTimesAgg(1,thisIter) = realPeakT;
-        realFracAgg{1,thisIter} = spikeFracs;
+        realFracAgg{1,thisIter} = spikeFrac1;
+        realFracAgg{2,thisIter} = spikeFrac2;
+        fracDiffAgg{1,thisIter} = fracDiff;
         fracLinAgg{1,thisIter} = fracLinear;
         realDiffAgg{1,thisIter} = realDiff;
         realTimeAgg{1,thisIter} = realTime;
@@ -242,22 +245,23 @@ else
 end
 
 %build output
-sLatenzy.latency = respLatency;
-sLatenzy.peakTimes = peakTimesAgg;
-sLatenzy.peakVals = peakValsAgg;
-sLatenzy.realFrac = realFracAgg;
-sLatenzy.fracLin = fracLinAgg;
-sLatenzy.realDiff = realDiffAgg;
-sLatenzy.realTime = realTimeAgg;
-sLatenzy.meanRealDiff = meanRealDiffAgg;
-sLatenzy.randDiff = randDiffAgg;
-sLatenzy.randTime = randTimeAgg;
-sLatenzy.meanRandDiff = meanRandDiffAgg;
-sLatenzy.pValsPeak = pValPeakAgg;
-sLatenzy.peakZ = peakZAgg;
-sLatenzy.latenzyIdx = peakTimesAgg==respLatency;
+sLatenzy2.latency = respLatency;
+sLatenzy2.peakTimes = peakTimesAgg;
+sLatenzy2.peakVals = peakValsAgg;
+sLatenzy2.realFrac = realFracAgg;
+sLatenzy2.fracDiff = fracDiffAgg;
+sLatenzy2.fracLin = fracLinAgg;
+sLatenzy2.realDiff = realDiffAgg;
+sLatenzy2.realTime = realTimeAgg;
+sLatenzy2.meanRealDiff = meanRealDiffAgg;
+sLatenzy2.randDiff = randDiffAgg;
+sLatenzy2.randTime = randTimeAgg;
+sLatenzy2.meanRandDiff = meanRandDiffAgg;
+sLatenzy2.pValsPeak = pValPeakAgg;
+sLatenzy2.peakZ = peakZAgg;
+sLatenzy2.latenzyIdx = peakTimesAgg==respLatency;
 
 %plot, optional
-if makePlots>0, sLatenzy.figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useMaxDur,makePlots); end
+if makePlots>0, sLatenzy2.figHandles = makeLatenzy2Figs(sLatenzy2,spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,makePlots); end
 
 end

@@ -1,8 +1,6 @@
-function [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
-    calcTempDiff2(spikesPerTrial1,spikesPerTrial2,useMaxDur,useFastInterp)
+function [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2,fracDiff,fracLinear] = calcTempDiff2(spikesPerTrial1,spikesPerTrial2,useMaxDur,useFastInterp)
 % compute temporal offset vectors, syntax:
-% [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
-%     calcTempDiff2(spikesPerTrial1,spikesPerTrial2,useMaxDur,useFastInterp)
+% [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2,fracDiff,fracLinear] = calcTempDiff2(spikesPerTrial1,spikesPerTrial2,useMaxDur,useFastInterp)
 %
 % history:
 %   v0.9 - 18 February 2025

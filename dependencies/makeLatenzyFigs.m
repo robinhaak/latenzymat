@@ -1,6 +1,5 @@
 function figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useMaxDur,makePlots)
 % make figures for latenzy method
-% Robin Haak, 2024
 %
 % history:
 %   v0.9 - 6 January 2025
@@ -43,7 +42,7 @@ if makePlots==1
     title('Spike raster plot');
 end
 
-%plot cumulative spike over time
+%plot cumulative spikes over time
 figHandles(2) = subplot(2,2,2); hold on
 for iter = 1:numIters
     plot(realTime{iter},fracLin{iter},'color',[0.5 0.5 0.5],'LineWidth',lineWidth);
@@ -70,7 +69,7 @@ set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
-title('\color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated onset');
+title('\color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated latency');
 
 %for iteration w/latency, plot real + shuffles
 figHandles(4) = subplot(2,2,4); hold on
@@ -87,5 +86,5 @@ ylabel('Deviation (Δfraction)');
 title(sprintf('Real data + shuffles, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
-sgtitle(sprintf('Estimated response latency = %.4fs', latency), 'FontWeight', 'bold');
+sgtitle(sprintf('Estimated latency = %.4fs', latency), 'FontWeight', 'bold');
 end

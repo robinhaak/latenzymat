@@ -161,7 +161,7 @@ while doContinue
     end
 
     %get temporal deviation
-    [realDiff,realTime,spikeFracs,fracLinear] = calcTempDiff(pseudoSpikeTimes,pseudoEventTimes,thisMaxDur);
+    [realDiff,realTime,spikeFrac,fracLinear] = calcTempDiff(pseudoSpikeTimes,pseudoEventTimes,thisMaxDur);
     if numel(realDiff) < 3
         return
     end
@@ -192,7 +192,7 @@ while doContinue
     if ~isnan(realPeakT)
         peakValsAgg(1,thisIter) = realMaxD;
         peakTimesAgg(1,thisIter) = realPeakT;
-        realFracAgg{1,thisIter} = spikeFracs;
+        realFracAgg{1,thisIter} = spikeFrac;
         fracLinAgg{1,thisIter} = fracLinear;
         realDiffAgg{1,thisIter} = realDiff;
         realTimeAgg{1,thisIter} = realTime;
