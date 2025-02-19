@@ -1,6 +1,6 @@
-function [peaksRandD,resampD,resampT] = runJitteredBootstraps(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,useParPool)
+function [peaksRandD,resampD,resampT] = runJitterBootstraps(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,useParPool)
 % run bootstraps by jittering event times, syntax:
-%   [peaksRandD,randD,randT] = runJitteredBootstraps(spikeTimes,eventTimes,preEventTime,postEventTime,resampNum,jitterSize,useParPool)
+%   [peaksRandD,randD,randT] = runJitterBootstraps(spikeTimes,eventTimes,preEventTime,postEventTime,resampNum,jitterSize,useParPool)
 %
 % history:
 %   v0.9 - 6 January 2025
