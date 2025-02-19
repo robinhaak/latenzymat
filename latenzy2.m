@@ -141,7 +141,7 @@ if restrictNeg
     minLatency = 0;
 end
 
-% check if we can use the fast interpolation function
+% check if we can use the fast interpolation
 useFastInterp = false;
 try
     vecTest = lininterp1f([0;0.25;1],[0;0.5;1],[-1;0;0.1;0.5;1],nan);
@@ -170,13 +170,12 @@ while doContinue
     thisIter = thisIter+1;
 
     %get spikes per event
-    thisMaxDur = [0 1];
     [~,spikesPerEvent1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
     [~,spikesPerEvent2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
 
     %get temporal difference
     [realDiff,realTime,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpikeTimes2] = ...
-        calcTempDiff2(spikesPerEvent1,spikesPerEvent2,useMaxDur,useFastInterp);
+        calcTempDiff2(spikesPerEvent1,spikesPerEvent2,thisMaxDur,useFastInterp);
     if numel(realDiff) < 3
         return
     end
