@@ -1,10 +1,10 @@
-function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNeg,makePlots)
-% get event-related response latency, syntax:
+function [latency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNeg,makePlots)
+% get event-related spiking latency, syntax:
 %   [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,minPeakZ,doStitch,useParPool,useDirectQuant,restrictNeg,makePlots)
 %   
 %   inputs:
 %   - spikeTimes: [S x 1]: spike times (s)
-%   - eventTimes: [T x 1]: event (start) times (s)
+%   - eventTimes: [T x 1]: event times (s)
 %   - useMaxDur: scalar or [N x 2], time to include after/around event times (s) (default: [0 min(diff(eventtimes))])
 %   - resampNum: integer, number of resamples (default: 100)
 %   - jitterSize: scalar, temporal jitter window relative to useMaxDur (s) (default: 2)
@@ -21,7 +21,7 @@ function [respLatency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resamp
 %       - latency: response latency (s)
 %       - peakTimes: detected peak/through times, one per iter (s)
 %       - peakVals: detected peak/through values, one per iter
-%       - realFrac: used for plotting only
+%       - realFrac: see plotting function for details
 %       - fracLin: idem
 %       - realDiff: idem
 %       - realTime: idem
@@ -122,7 +122,7 @@ giveLateWarn = true;
 %% MAIN
 %pre-allocate
 %#ok<*AGROW>
-respLatency = nan;
+latency = nan;
 peakTimesAgg = [];
 peakValsAgg = [];
 realFracAgg = {};
@@ -217,10 +217,10 @@ end
 %get latency
 thesePeakTimes = peakTimesAgg(logical(keepPeaks));
 if ~isempty(thesePeakTimes)
-    respLatency = thesePeakTimes(end);
+    latency = thesePeakTimes(end);
 
     %warning
-    if respLatency > (useMaxDur(1)+sum(abs(useMaxDur))/2) && giveLateWarn
+    if latency > (useMaxDur(1)+sum(abs(useMaxDur))/2) && giveLateWarn
         warning('Estimated latency is quite late in the window (>T/2), consider plotting and/or adjusting window');
     end
 else
@@ -228,7 +228,7 @@ else
 end
 
 %build output
-sLatenzy.latency = respLatency;
+sLatenzy.latency = latency;
 sLatenzy.peakTimes = peakTimesAgg;
 sLatenzy.peakVals = peakValsAgg;
 sLatenzy.realFrac = realFracAgg;
@@ -241,7 +241,7 @@ sLatenzy.randTime = randTimeAgg;
 sLatenzy.meanRandDiff = meanRandDiffAgg;
 sLatenzy.pValsPeak = pValPeakAgg;
 sLatenzy.peakZ = peakZAgg;
-sLatenzy.latenzyIdx = peakTimesAgg==respLatency;
+sLatenzy.latenzyIdx = peakTimesAgg==latency;
 
 %plot, optional
 if makePlots>0, sLatenzy.figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useMaxDur,makePlots); end
