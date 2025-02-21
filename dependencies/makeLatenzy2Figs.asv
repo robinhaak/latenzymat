@@ -58,15 +58,16 @@ end
 if makePlots==999
     %raster plot condition 1
     figHandles(1) = subplot(2,3,1); hold on
-    numEvents1 = numel(spikeTimes1);
-    for thisRep = 1:numEvents1
+    for thisRep = 1:numel(spikeTimes1)
         theseSpikes = spikeTimes1{thisRep};
-        idxRem = theseSpikes<useMaxDur(1) | theseSpikes>useMaxDur(2);
-        theseSpikes(idxRem) = [];
-        scatter(theseSpikes,thisRep*ones(size(theseSpikes)),2,'.','MarkerEdgeColor',[0 0 0]);
+        scatter(theseSpikes,thisRep*ones(size(theseSpikes),10,'.','k'));
     end
-    ylim([1 numEvents1])
+
+
+
+
     yLim = ylim;
+    hold on
     plot([latency latency], yLim,'color',[0.8627 0.0784 0.2353],'LineStyle','--','LineWidth',lineWidth);
     set(gca,'box','off','TickDir','out');
     ylabel('Trial');
@@ -74,16 +75,10 @@ if makePlots==999
     title('Raster plot condition 1');
 
     %raster plot condition 2
-    figHandles(4) = subplot(2,3,4); hold on
-    numEvents2 = numel(spikeTimes2);
-    for thisRep = 1:numEvents2
-        theseSpikes = spikeTimes2{thisRep};
-        idxRem = theseSpikes<useMaxDur(1) | theseSpikes>useMaxDur(2);
-        theseSpikes(idxRem) = [];
-        scatter(theseSpikes,thisRep*ones(size(theseSpikes)),2,'.','MarkerEdgeColor',[0 0 0]);
-    end
-    ylim([1 numEvents2])
+    figHandles(4) = subplot(2,3,4);
+    rasterPlot(spikeTimes2,eventTimes2,useMaxDur);
     yLim = ylim;
+    hold on
     plot([latency latency], yLim,'color',[0.8627 0.0784 0.2353],'LineStyle','--','LineWidth',lineWidth);
     set(gca,'box','off','TickDir','out');
     ylabel('Trial');

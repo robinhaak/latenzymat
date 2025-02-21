@@ -24,10 +24,11 @@ if useParPool
         % useRand1 = randi(numEvTot,[1,numEv1]);
         % useRand2 = randi(numEvTot,[1,numEv2]);
 
-        %without replacement:
-        shuffledIdx = randperm(numEvTot);
+        shuffledIdx = randperm(numEvTot); % Shuffle all indices
+
         useRand1 = shuffledIdx(1:numEv1);
         useRand2 = shuffledIdx(numEv1+1:end);
+
 
         spikesPerTrial1_Rand = spikesAgg(useRand1);
         spikesPerTrial2_Rand = spikesAgg(useRand2);
@@ -56,13 +57,8 @@ if useParPool
 else
     for resamp=1:resampNum
         %% get random subsample
-        % useRand1 = randi(numEvTot,[1,numEv1]);
-        % useRand2 = randi(numEvTot,[1,numEv2]);
-
-        %without replacement:
-        shuffledIdx = randperm(numEvTot);
-        useRand1 = shuffledIdx(1:numEv1);
-        useRand2 = shuffledIdx(numEv1+1:end);
+        useRand1 = randi(numEvTot,[1,numEv1]);
+        useRand2 = randi(numEvTot,[1,numEv2]);
 
         spikesPerTrial1_Rand = spikesAgg(useRand1);
         spikesPerTrial2_Rand = spikesAgg(useRand2);

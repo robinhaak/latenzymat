@@ -9,9 +9,9 @@ function [tempDiff,relSpikeTimesAgg,spikeFrac1,relSpikeTimes1,spikeFrac2,relSpik
 %% get trial-pooled relative spike times
 relSpikeTimes1 = getDistinctSpikes(cell2vec(spikesPerTrial1));
 relSpikeTimes2 = getDistinctSpikes(cell2vec(spikesPerTrial2));
-relSpikeTimesAgg = cat(1,relSpikeTimes1,relSpikeTimes2);
 
-%add two artificial spikes
+%combine, add two artificial spikes
+relSpikeTimesAgg = cat(1,relSpikeTimes1,relSpikeTimes2);
 relSpikeTimesAgg = [useMaxDur(1);sort(relSpikeTimesAgg(:));useMaxDur(2)];
 
 %% get temporal difference vector

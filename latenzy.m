@@ -19,8 +19,8 @@ function [latency,sLatenzy] = latenzy(spikeTimes,eventTimes,useMaxDur,resampNum,
 %   - respLatency: response latency (s) (NaN when no latency could be estimated)
 %   - sLatenzy: structure with fields:
 %       - latency: response latency (s)
-%       - peakTimes: detected peak/through times, one per iter (s)
-%       - peakVals: detected peak/through values, one per iter
+%       - peakTimes: detected peak times, one per iter (s)
+%       - peakVals: detected peak values, one per iter
 %       - realFrac: see plotting function for details
 %       - fracLin: idem
 %       - realDiff: idem

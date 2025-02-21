@@ -16,12 +16,17 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %   - restrictNeg: boolean flag, restrict negative latencies (default: true)
 %   - makePlots: integer, plotting switch (0=none, 1=raster+traces, 2=traces only, default: 0)
 %
+%   *alternative input for latenzy2() is possible, because event times are not jittered:
+%   - spikeTimes1 and spikeTimes2 should be cell arrays, where every cell contains the aligned(!) spikes for event.
+%   - set eventTimes1 and eventTimes 2 to [].
+%   - set useMaxDur to match (or use a smaller window)
+%
 %   outputs:
 %   - respLatency: response latency (s) (NaN when no latency could be estimated)
 %   - sLatenzy2: structure with fields:
 %       - latency: response latency (s)
-%       - peakTimes: detected peak/through times, one per iter (s)
-%       - peakVals: detected peak/through values, one per iter
+%       - peakTimes: detected peak times, one per iter (s)
+%       - peakVals: detected peak values, one per iter
 %       - realFrac: see plotting function for details
 %       - diffUnSub: idem
 %       - fracLin: idem
@@ -37,19 +42,29 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %       - handleFigs: figure handles
 %
 % history:
-%   v0.9 - 18 Debruary 2025
+%   v0.9 - 18 February 2025
 %   - created by Robin Haak
 
 %% prep
-%ensure correct orientation
-spikeTimes1 = spikeTimes1(:);
-if isempty(spikeTimes2)
-    spikeTimes2 = spikeTimes1;
-else
+%check for alternative input
+altInput = false;
+if isempty(eventTimes1) && isempty(eventTimes2) && iscell(spikeTimes1) && iscell(spikeTimes2)
+    altInput = true;
+
+    %ensure correct orientation
+    spikeTimes1 = spikeTimes1(:);
     spikeTimes2 = spikeTimes2(:);
+else
+    %ensure correct orientation
+    spikeTimes1 = spikeTimes1(:);
+    if isempty(spikeTimes2)
+        spikeTimes2 = spikeTimes1;
+    else
+        spikeTimes2 = spikeTimes2(:);
+    end
+    eventTimes1 = eventTimes1(:);
+    eventTimes2 = eventTimes2(:);
 end
-eventTimes1 = eventTimes1(:);
-eventTimes2 = eventTimes2(:);
 
 %get useMaxDur
 if ~exist('useMaxDur','var') || isempty(useMaxDur)
@@ -172,9 +187,15 @@ end
 while doContinue
     thisIter = thisIter+1;
 
-    %get spikes per event
-    [~,spikesPerEvent1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
-    [~,spikesPerEvent2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
+    if altInput
+        spikesPerEvent1
+
+
+    else
+        %get spikes per event, for both conditions
+        [~,spikesPerEvent1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
+        [~,spikesPerEvent2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
+    end
 
     %get temporal difference
     [realDiff,realTime,spikeFrac1,~,spikeFrac2,~,tempDiffUnSub,fracLinear] = ...

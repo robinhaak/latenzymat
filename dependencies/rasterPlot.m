@@ -2,12 +2,17 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 % make a raster plot, syntax:
 %   rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, color, plotMaxSpikes)
 %   inputs:
-%   - spikeTimes [S x 1]: spike times (s)
+%   - spikeTimes [S x 1]: spike times (s)*
 %   - eventTimes [T x 1]: event (start) times (s)
 %   - useMaxDur: scalar or [pre post], time to include after/around event times (s)
 %   - trialType: label for trialtype (e.g., orientation), same size as eventTimes
 %   - plotColor: colors for plotting [3 x N], where N is unique trialtypes
 %   - plotMaxSpikes: max number of spikes to plot (default: inf)
+%
+% *alternative input available:
+%   - spikeTimes should be a cell array, where every cell contains the aligned(!) spikes for a repetition
+%   - set eventTimes to []
+%   - set useMaxDur to match (or use a smaller window)
 %
 % history:
 %   v0.9 - 6 January 2025
@@ -104,7 +109,7 @@ if numTrialType > 1
 
     %add a secondary y-axis for labels
     ax2 = axes('Position', [0.9 0.1 0.05 0.8], 'Color', 'none', 'YAxisLocation', 'right');
-    axis(ax2,'off'); % Turn off the axis
+    axis(ax2,'off'); % turn off the axis
 
     for thisTrialType = 1:numTrialType
         numTrials = numel(find(trialType == uniqueType(thisTrialType)));
@@ -114,7 +119,6 @@ if numTrialType > 1
             'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle');
     end
 end
-
 end
 
 function colors = getColors(numColors)
