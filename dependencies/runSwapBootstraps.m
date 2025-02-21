@@ -14,15 +14,15 @@ resampD = cell(1,resampNum);
 peaksRandD = nan(1,resampNum);
 trialsAgg = cat(1,spikesPerEvent1,spikesPerEvent2);
 idxSpikes0 = cellfun(@numel,trialsAgg)==0;
-numTr1 = numel(spikesPerEvent1);
-numTr2 = numel(spikesPerEvent2);
-numTrTot = numTr1+numTr2;
+numEv1 = numel(spikesPerEvent1);
+numEv2 = numel(spikesPerEvent2);
+numEvTot = numEv1+numEv2;
 
 if useParPool
     parfor resamp=1:resampNum
         %% get random subsample
-        useRand1 = randi(numTrTot,[1,numTr1]);
-        useRand2 = randi(numTrTot,[1,numTr2]);
+        useRand1 = randi(numEvTot,[1,numEv1]);
+        useRand2 = randi(numEvTot,[1,numEv2]);
 
         spikesPerTrial1_Rand = trialsAgg(useRand1);
         spikesPerTrial2_Rand = trialsAgg(useRand2);
@@ -51,8 +51,8 @@ if useParPool
 else
     for resamp=1:resampNum
         %% get random subsample
-        useRand1 = randi(numTrTot,[1,numTr1]);
-        useRand2 = randi(numTrTot,[1,numTr2]);
+        useRand1 = randi(numEvTot,[1,numEv1]);
+        useRand2 = randi(numEvTot,[1,numEv2]);
 
         spikesPerTrial1_Rand = trialsAgg(useRand1);
         spikesPerTrial2_Rand = trialsAgg(useRand2);

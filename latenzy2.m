@@ -1,6 +1,6 @@
 function [respLatency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx, syntax:
-% [respLatency,sLatenzy] = latenzy2(spikeTimes,eventTimes,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)%   
+% [respLatency,sLatenzy] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)  
 %   inputs:
 %   - spikeTimes: [S x 1]: spike times (s)
 %   - eventTimes: [T x 1]: event (start) times (s)
@@ -73,7 +73,7 @@ end
 
 %get resampNum
 if ~exist('resampNum','var') || isempty(resampNum)
-    resampNum = 500; %zeta does 250?
+    resampNum = 100; %zeta does 250?
 end
 
 %get peakZ
@@ -120,7 +120,7 @@ respLatency = nan;
 peakTimesAgg = [];
 peakValsAgg = [];
 realFracAgg = {};
-fracDiffAgg = {};
+diffUnSubAgg = {};
 fracLinAgg = {};
 realDiffAgg = {};
 realTimeAgg = {};
@@ -168,14 +168,14 @@ end
 %%
 %run
 while doContinue
-    thisIter = thisIter+1
+    thisIter = thisIter+1;
 
     %get spikes per event
     [~,spikesPerEvent1] = getRelSpikeTimes(spikeTimes1,eventTimes1,thisMaxDur);
     [~,spikesPerEvent2] = getRelSpikeTimes(spikeTimes2,eventTimes2,thisMaxDur);
 
     %get temporal difference
-    [realDiff,realTime,spikeFrac1,~,spikeFrac2,~,fracDiff,fracLinear] = ...
+    [realDiff,realTime,spikeFrac1,~,spikeFrac2,~,tempDiffUnSub,fracLinear] = ...
         calcTempDiff2(spikesPerEvent1,spikesPerEvent2,thisMaxDur,useFastInterp);
     if numel(realDiff) < 3
         return
@@ -209,7 +209,7 @@ while doContinue
         peakTimesAgg(1,thisIter) = realPeakT;
         realFracAgg{1,thisIter} = spikeFrac1;
         realFracAgg{2,thisIter} = spikeFrac2;
-        fracDiffAgg{1,thisIter} = fracDiff;
+        diffUnSubAgg{1,thisIter} = tempDiffUnSub;
         fracLinAgg{1,thisIter} = fracLinear;
         realDiffAgg{1,thisIter} = realDiff;
         realTimeAgg{1,thisIter} = realTime;
@@ -249,7 +249,7 @@ sLatenzy2.latency = respLatency;
 sLatenzy2.peakTimes = peakTimesAgg;
 sLatenzy2.peakVals = peakValsAgg;
 sLatenzy2.realFrac = realFracAgg;
-sLatenzy2.fracDiff = fracDiffAgg;
+sLatenzy2.diffUnSub = diffUnSubAgg;
 sLatenzy2.fracLin = fracLinAgg;
 sLatenzy2.realDiff = realDiffAgg;
 sLatenzy2.realTime = realTimeAgg;

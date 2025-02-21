@@ -11,7 +11,7 @@ latency = sLatenzy2.latency;
 peakTimes = sLatenzy2.peakTimes;
 peakVals = sLatenzy2.peakVals;
 realFrac = sLatenzy2.realFrac;
-fracDiff = sLatenzy2.fracDiff;
+diffUnSub = sLatenzy2.diffUnSub;
 % fracLin = sLatenzy2.fracLin;
 realDiff = sLatenzy2.realDiff;
 realTime = sLatenzy2.realTime;
@@ -62,24 +62,32 @@ p(2) = plot(realTime{1},realFrac{2,1},'color',[0.9255 0.7255 0.5670],'LineWidth'
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Cumulative num. spikes/rep.');
+ylabel('Cumulative No. of spikes/rep.');
 title('Cumulative spikes');
 lgd = legend(p,{'1','2'},'Location','southeast','Box','off');
 title(lgd, 'Condition');
 
 %plot difference
 figHandles(3) = subplot(2,3,3); hold on
-plot(realTime{1},fracDiff{1},'color',[0.5 0.5 0.5],'LineWidth',lineWidth);
+% p = [];
+% for iter = 1:numIters
+%     plot(realTime{iter},fracLin{iter},'color',[0.5 0.5 0.5],'LineWidth',lineWidth);
+%     p(iter) = plot(realTime{iter},fracDiff{iter},'color',useColors(iter,:),'LineWidth',lineWidth);
+%     labels{iter} = sprintf('%d', iter);
+% end
+plot(realTime{1},diffUnSub{1},'color',[0 0 0],'LineWidth',lineWidth);
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Deviation (XXXXXXXX)');
-title('Cumulative difference');
+ylabel('Difference (spikes/rep.)');
+title('Condition 1 - condition 2');
+% lgd = legend(p, labels, 'Location', 'best','Box','off');
+% title(lgd, 'Iteration');
 
 %plot offset from linear baseline
-figHandles(3) = subplot(2,3,5); hold on
+figHandles(5) = subplot(2,3,5); hold on
 plot(useMaxDur,[0 0],'color',[0.5 0.5 0.5],'LineWidth',lineWidth,'LineStyle','--');
-p = [];
+% p = [];
 for iter = 1:numIters
     p(iter) = plot(realTime{iter},realDiff{iter},'color',useColors(iter,:),'LineWidth',lineWidth);
     labels{iter} = sprintf('%d', iter);
@@ -89,13 +97,13 @@ scatter(peakTimes(latenzyIdx),peakVals(latenzyIdx),markerSize,'x','MarkerEdgeCol
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Deviation (Δfraction)');
-title('\color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated onset');
+ylabel('Difference (spikes/rep.)');
+title('Linear-subtracted difference, \color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated latency');
 lgd = legend(p, labels, 'Location', 'southeast','Box','off');
 title(lgd, 'Iteration');
 
-%for iteration w/latency, plot real + shuffles
-figHandles(4) = subplot(2,3,6); hold on
+%for iteration w/latency, plot real + jitters
+figHandles(6) = subplot(2,3,6); hold on
 for thisShuffle=1:length(randDiff)
     plot(randTime{thisShuffle,latenzyIdx},(randDiff{thisShuffle,latenzyIdx}-meanRandDiff(thisShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5 0.5],'LineWidth',lineWidth);
 end
@@ -106,8 +114,8 @@ else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
-title(sprintf('Real data + shuffles, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
+title(sprintf('Real data + resamplings, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
-sgtitle(sprintf('Estimated response latency = %.4fs', latency), 'FontWeight', 'bold');
+sgtitle(sprintf('Estimated latency of the difference = %.4fs', latency), 'FontWeight', 'bold');
 end
