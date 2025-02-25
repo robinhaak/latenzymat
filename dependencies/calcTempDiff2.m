@@ -47,6 +47,7 @@ tempDiffUnSub = tempDiff;
 fracLinear = tempDiff(1)+(tempDiff(end)-tempDiff(1))*...
     (relSpikeTimesAgg-relSpikeTimesAgg(1))/(relSpikeTimesAgg(end)-relSpikeTimesAgg(1));
 tempDiff = tempDiff-fracLinear;
-%tempDiff = tempDiff-mean(tempDiff);
+
+%tempDiff = tempDiff-mean(tempDiff); % mean is subtracted in main latenzy2() function
 
 end

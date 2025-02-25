@@ -91,7 +91,7 @@ end
 
 %get resampNum
 if ~exist('resampNum','var') || isempty(resampNum)
-    resampNum = 100;
+    resampNum = 250;
 end
 
 %get peakZ
@@ -215,13 +215,13 @@ while doContinue
         realMaxIdx = maxIdx;
     end
     realPeakT = realTime(realMaxIdx);
-    realPeakSub = realMaxD-mean(realDiff);
+    realPeakSub = realMaxD;%-mean(realDiff);
 
     %run bootstraps
     [peaksRand,randDiff,randTime] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,...
         useMaxDur,resampNum,useParPool,useFastInterp);
     meanRandDiff = cellfun(@(x)mean(x),randDiff);
-    peaksRandSub = peaksRand-meanRandDiff;
+    peaksRandSub = peaksRand;%-meanRandDiff;
 
     %compute significance
     [pValPeak,peakZ] = computeZ(abs(realPeakSub),peaksRandSub(~isnan(peaksRandSub)),useDirectQuant);
@@ -286,7 +286,7 @@ sLatenzy2.latenzyIdx = peakTimesAgg==latency;
 
 %plot, optional
 if makePlots>0
-    if altInput,makePlots=999;end
+    if altInput,makePlots=9;end
     sLatenzy2.figHandles = makeLatenzy2Figs(sLatenzy2,spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,makePlots);
 end
 

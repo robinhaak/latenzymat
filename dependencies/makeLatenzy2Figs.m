@@ -55,7 +55,7 @@ if makePlots==1
 end
 
 %alternative raster plots
-if makePlots==999
+if makePlots==9
     %raster plot condition 1
     figHandles(1) = subplot(2,3,1); hold on
     numEvents1 = numel(spikeTimes1);
