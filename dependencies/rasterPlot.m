@@ -1,6 +1,6 @@
-function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plotMaxSpikes)
+function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plotMaxSpikes, addLabels)
 % make a raster plot, syntax:
-%   rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, color, plotMaxSpikes)
+%   rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plotMaxSpikes, addLabels)
 %   inputs:
 %   - spikeTimes [S x 1]: spike times (s)*
 %   - eventTimes [T x 1]: event (start) times (s)
@@ -8,6 +8,7 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 %   - trialType: label for trialtype (e.g., orientation), same size as eventTimes
 %   - plotColor: colors for plotting [3 x N], where N is unique trialtypes
 %   - plotMaxSpikes: max number of spikes to plot (default: inf)
+%   - addLabels: boolean, add trialType labels (default: true)
 %
 % *alternative input available:
 %   - spikeTimes should be a cell array, where every cell contains the aligned(!) spikes for a repetition
@@ -50,12 +51,16 @@ if ~exist('plotMaxSpikes', 'var') || isempty(plotMaxSpikes)
     plotMaxSpikes = inf;
 end
 
+if ~exist('addLabels','var') || isempty(addLabels)
+    addLabels = true;
+end
+
+%% make raster plot
 %subselect
 if numel(spikeTimes) > plotMaxSpikes
     spikeTimes = spikeTimes(sort(randperm(numel(spikeTimes), plotMaxSpikes)));
 end
 
-%% make raster plot
 % cla;
 hold on;
 offset = 0;
@@ -79,7 +84,7 @@ if numTrialType > 1
         yLabelPos = offset + round(numTrials / 2);
 
         %add label only if there are multiple trial types
-        if numTrialType > 1
+        if numTrialType > 1 & addLabels
             text(max(xlim) + 0.05, yLabelPos, sprintf('%d', uniqueType(thisTrialType)), ...
                 'Color', plotColor(thisTrialType, :), 'FontSize', 10, 'FontWeight', 'bold', ...
                 'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle');
@@ -105,7 +110,7 @@ xlabel('Time from event (s)');
 ylabel('Trial');
 
 %add labels for each trialType on the right y-axis
-if numTrialType > 1
+if numTrialType > 1 & addLabels
 
     %add a secondary y-axis for labels
     ax2 = axes('Position', [0.9 0.1 0.05 0.8], 'Color', 'none', 'YAxisLocation', 'right');
