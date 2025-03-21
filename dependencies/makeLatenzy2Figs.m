@@ -11,7 +11,7 @@ latency = sLatenzy2.latency;
 peakTimes = sLatenzy2.peakTimes;
 peakVals = sLatenzy2.peakVals;
 realFrac = sLatenzy2.realFrac;
-diffUnSub = sLatenzy2.diffUnSub;
+tempDiffUnSub = sLatenzy2.diffUnSub;
 % fracLin = sLatenzy2.fracLin;
 realDiff = sLatenzy2.realDiff;
 realTime = sLatenzy2.realTime;
@@ -112,7 +112,7 @@ figHandles(3) = subplot(2,3,3); hold on
 %     p(iter) = plot(realTime{iter},fracDiff{iter},'color',useColors(iter,:),'LineWidth',lineWidth);
 %     labels{iter} = sprintf('%d', iter);
 % end
-plot(realTime{1},diffUnSub{1},'color',useColors(1,:),'LineWidth',lineWidth);
+plot(realTime{1},tempDiffUnSub{1},'color',useColors(1,:),'LineWidth',lineWidth);
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');

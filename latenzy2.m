@@ -28,7 +28,7 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %       - peakTimes: detected peak times, one per iter (s)
 %       - peakVals: detected peak values, one per iter
 %       - realFrac: see plotting function for details
-%       - diffUnSub: idem
+%       - tempDiffUnSub: idem
 %       - fracLin: idem
 %       - realDiff: idem
 %       - realTime: idem
@@ -138,7 +138,7 @@ latency = nan;
 peakTimesAgg = [];
 peakValsAgg = [];
 realFracAgg = {};
-diffUnSubAgg = {};
+tempDiffUnSubAgg = {};
 fracLinAgg = {};
 realDiffAgg = {};
 realTimeAgg = {};
@@ -232,7 +232,7 @@ while doContinue
         peakTimesAgg(1,thisIter) = realPeakT;
         realFracAgg{1,thisIter} = spikeFrac1;
         realFracAgg{2,thisIter} = spikeFrac2;
-        diffUnSubAgg{1,thisIter} = tempDiffUnSub;
+        tempDiffUnSubAgg{1,thisIter} = tempDiffUnSub;
         fracLinAgg{1,thisIter} = fracLinear;
         realDiffAgg{1,thisIter} = realDiff;
         realTimeAgg{1,thisIter} = realTime;
@@ -272,7 +272,7 @@ sLatenzy2.latency = latency;
 sLatenzy2.peakTimes = peakTimesAgg;
 sLatenzy2.peakVals = peakValsAgg;
 sLatenzy2.realFrac = realFracAgg;
-sLatenzy2.diffUnSub = diffUnSubAgg;
+sLatenzy2.diffUnSub = tempDiffUnSubAgg;
 sLatenzy2.fracLin = fracLinAgg;
 sLatenzy2.realDiff = realDiffAgg;
 sLatenzy2.realTime = realTimeAgg;
