@@ -99,7 +99,7 @@ p(2) = plot(realTime{1},realFrac{2,1},'color',[0.9255 0.7255 0.5670],'LineWidth'
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Cumulative No. of spikes/rep.');
+ylabel('Cumulative spike count/trial');
 title('Cumulative spikes');
 lgd = legend(p,{'1','2'},'Location','southeast','Box','off');
 title(lgd, 'Condition');
@@ -116,7 +116,7 @@ plot(realTime{1},tempDiffUnSub{1},'color',useColors(1,:),'LineWidth',lineWidth);
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Difference (spikes/rep.)');
+ylabel('Spike count difference ');
 title('Condition 1 - condition 2');
 % lgd = legend(p, labels, 'Location', 'best','Box','off');
 % title(lgd, 'Iteration');
@@ -134,7 +134,7 @@ scatter(peakTimes(latenzyIdx),peakVals(latenzyIdx),markerSize,'x','MarkerEdgeCol
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Difference (spikes/rep.)');
+ylabel('Deviation (Δcount)');
 title('Linear-subtracted difference, \color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated latency');
 lgd = legend(p, labels, 'Location', 'southeast','Box','off');
 title(lgd, 'Iteration');
@@ -150,7 +150,7 @@ if latenzyIdx(1),xlim(useMaxDur);
 else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
-ylabel('Deviation (Δfraction)');
+ylabel('Deviation (Δcount)');
 title(sprintf('Real data + resamplings, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
