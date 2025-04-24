@@ -71,7 +71,7 @@ xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
 title('\color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated latency');
 
-%for iteration w/latency, plot real + shuffles
+%for iteration w/latency, plot real + jitters
 figHandles(4) = subplot(2,2,4); hold on
 for thisShuffle=1:length(randDiff)
     plot(randTime{thisShuffle,latenzyIdx},(randDiff{thisShuffle,latenzyIdx}-meanRandDiff(thisShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5 0.5],'LineWidth',lineWidth);
@@ -83,7 +83,7 @@ else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
-title(sprintf('Real data + shuffles, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
+title(sprintf('Real data + jitterss, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
 sgtitle(sprintf('Estimated latency = %.4fs', latency), 'FontWeight', 'bold');

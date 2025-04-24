@@ -139,7 +139,7 @@ title('Linear-subtracted difference, \color[rgb]{0.8627,0.0784,0.2353}x\color{bl
 lgd = legend(p, labels, 'Location', 'southeast','Box','off');
 title(lgd, 'Iteration');
 
-%for iteration w/latency, plot real + jitters
+%for iteration w/latency, plot real + shuffles
 figHandles(6) = subplot(2,3,6); hold on
 for thisShuffle=1:length(randDiff)
     plot(randTime{thisShuffle,latenzyIdx},(randDiff{thisShuffle,latenzyIdx}-meanRandDiff(thisShuffle,latenzyIdx)) ,'Color',[0.5 0.5 0.5 0.5],'LineWidth',lineWidth);
