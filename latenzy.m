@@ -116,12 +116,13 @@ if ~exist('makePlots','var') || isempty(makePlots)
     makePlots = 0;
 end
 
-%enable warning for late
-giveLateWarn = true;
+%enable warning when estimates are > T/2
+giveLateWarn = false;
 
 %% MAIN
 %pre-allocate
 %#ok<*AGROW>
+%#ok<*UNRCH>
 latency = nan;
 peakTimesAgg = [];
 peakValsAgg = [];

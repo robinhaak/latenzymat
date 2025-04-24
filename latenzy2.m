@@ -129,11 +129,12 @@ if ~exist('makePlots','var') || isempty(makePlots)
 end
 
 %enable warning for late
-giveLateWarn = true;
+giveLateWarn = false;
 
 %% MAIN
 %pre-allocate
 %#ok<*AGROW>
+%#ok<*UNRCH>
 latency = nan;
 peakTimesAgg = [];
 peakValsAgg = [];
@@ -215,13 +216,13 @@ while doContinue
         realMaxIdx = maxIdx;
     end
     realPeakT = realTime(realMaxIdx);
-    realPeakSub = realMaxD;%-mean(realDiff);
+    realPeakSub = realMaxD-mean(realDiff);
 
     %run bootstraps
     [peaksRand,randDiff,randTime] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,...
-        useMaxDur,resampNum,useParPool,useFastInterp);
+        thisMaxDur,resampNum,useParPool,useFastInterp);
     meanRandDiff = cellfun(@(x)mean(x),randDiff);
-    peaksRandSub = peaksRand;%-meanRandDiff;
+    peaksRandSub = peaksRand-meanRandDiff;
 
     %compute significance
     [pValPeak,peakZ] = computeZ(abs(realPeakSub),peaksRandSub(~isnan(peaksRandSub)),useDirectQuant);

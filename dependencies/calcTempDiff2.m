@@ -12,7 +12,11 @@ relSpikeTimes2 = getDistinctSpikes(cell2vec(spikesPerTrial2));
 
 %combine, add two artificial spikes
 relSpikeTimesAgg = cat(1,relSpikeTimes1,relSpikeTimes2);
-relSpikeTimesAgg = [useMaxDur(1);sort(relSpikeTimesAgg(:));useMaxDur(2)];
+if max(relSpikeTimesAgg) < useMaxDur(2)
+    relSpikeTimesAgg = [useMaxDur(1);sort(relSpikeTimesAgg(:));useMaxDur(2)];
+else
+    relSpikeTimesAgg = [useMaxDur(1);sort(relSpikeTimesAgg(:))];
+end
 
 %% get temporal difference vector
 %cond1 goes to S1_n/T1_n; cond2 goes to S2_n/T2_n
