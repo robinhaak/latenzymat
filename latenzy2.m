@@ -16,7 +16,7 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %   - restrictNeg: boolean flag, restrict negative latencies (default: true)
 %   - makePlots: integer, plotting switch (0=none, 1=raster+traces, 2=traces only, default: 0)
 %
-%   *alternative input for latenzy2() is possible, because event times are not jittered:
+%   *alternative input for latenzy2() is possible:
 %   - spikeTimes1 and spikeTimes2 should be cell arrays, where every cell contains the aligned(!) spikes for event.
 %   - set eventTimes1 and eventTimes 2 to [].
 %   - set useMaxDur to match (or use a smaller window)
