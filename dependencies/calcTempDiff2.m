@@ -30,7 +30,7 @@ uniqueSpikeFracs1 = (1:numSp1)'/numEv1;
 if useFastInterp
     spikeFrac1 = lininterp1f([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;numSp1/numEv1],relSpikeTimesAgg,nan)';
 else
-    spikeFrac1 = interp1([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;numSp1/numEv1],relSpikeTimesAgg);
+    spikeFrac1 = interp1([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;numSp1/numEv1],relSpikeTimesAgg,'linear');
 end
 spikeFrac1 = fillnans(spikeFrac1,numSp1,numEv1);
 
@@ -39,7 +39,7 @@ uniqueSpikeFracs2 = (1:numSp2)'/numEv2;
 if useFastInterp
     spikeFrac2 = lininterp1f([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;numSp2/numEv2],relSpikeTimesAgg,nan)';
 else
-    spikeFrac2 = interp1([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;numSp2/numEv2],relSpikeTimesAgg);
+    spikeFrac2 = interp1([useMaxDur(1);relSpikeTimes2;useMaxDur(2)],[0;uniqueSpikeFracs2;numSp2/numEv2],relSpikeTimesAgg,'linear');
 end
 spikeFrac2 = fillnans(spikeFrac2,numSp2,numEv2);
 
