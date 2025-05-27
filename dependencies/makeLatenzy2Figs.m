@@ -12,7 +12,7 @@ peakTimes = sLatenzy2.peakTimes;
 peakVals = sLatenzy2.peakVals;
 realFrac = sLatenzy2.realFrac;
 tempDiffUnSub = sLatenzy2.diffUnSub;
-% fracLin = sLatenzy2.fracLin;
+fracLin = sLatenzy2.fracLin;
 realDiff = sLatenzy2.realDiff;
 realTime = sLatenzy2.realTime;
 meanRealDiff = sLatenzy2.meanRealDiff;
@@ -106,12 +106,7 @@ title(lgd, 'Condition');
 
 %plot difference
 figHandles(3) = subplot(2,3,3); hold on
-% p = [];
-% for iter = 1:numIters
-%     plot(realTime{iter},fracLin{iter},'color',[0.5 0.5 0.5],'LineWidth',lineWidth);
-%     p(iter) = plot(realTime{iter},fracDiff{iter},'color',useColors(iter,:),'LineWidth',lineWidth);
-%     labels{iter} = sprintf('%d', iter);
-% end
+plot(realTime{1},fracLin{1},'color',[0.5 0.5 0.5],'LineWidth',lineWidth);
 plot(realTime{1},tempDiffUnSub{1},'color',useColors(1,:),'LineWidth',lineWidth);
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);

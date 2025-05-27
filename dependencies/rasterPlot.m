@@ -26,8 +26,8 @@ eventTimes = eventTimes(:);
 
 %get useMaxDur
 if ~exist('useMaxDur','var') || isempty(useMaxDur)
-    eventTimes = sort(eventTimes);
-    useMaxDur = min(diff(eventTimes));
+    sortedEventTimes = sort(eventTimes);
+    useMaxDur = min(diff(sortedEventTimes));
 end
 if isscalar(useMaxDur)
     useMaxDur = sort([0 useMaxDur]);
@@ -48,7 +48,7 @@ if ~exist('plotColor', 'var') || isempty(plotColor) || size(plotColor, 1) ~= num
 end
 
 if ~exist('plotMaxSpikes', 'var') || isempty(plotMaxSpikes)
-    plotMaxSpikes = inf;
+    plotMaxSpikes = Inf;
 end
 
 if ~exist('addLabels','var') || isempty(addLabels)

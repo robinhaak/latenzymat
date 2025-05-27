@@ -34,7 +34,7 @@ if isempty(maxRandD)
 end
 
 
-%% calculate Significance
+%% calculate significance
 if useDirectQuant
     %empirical quantile-based p-values
     pVals = nan(size(maxD));
