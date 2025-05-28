@@ -26,7 +26,7 @@ numEv1 = numel(spikesPerTrial1);
 numEv2 = numel(spikesPerTrial2);
 
 %spike fraction #1
-uniqueSpikeFracs1 = (1:numSp1)'/numEv1;
+uniqueSpikeFracs1 = (1:numSp1)'/numEv1; %disp
 if useFastInterp
     spikeFrac1 = lininterp1f([useMaxDur(1);relSpikeTimes1;useMaxDur(2)],[0;uniqueSpikeFracs1;numSp1/numEv1],relSpikeTimesAgg,nan)';
 else
