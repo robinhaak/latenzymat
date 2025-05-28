@@ -23,12 +23,9 @@ n = numel(eventTimes);
 idx = randperm(n);
 eventTimes1 = eventTimes(idx(1:floor(n/2)));
 eventTimes2 = eventTimes(idx(floor(n/2)+1:end));
-jitter = zeros(size(eventTimes2));
-numJitter = round(3/4 * numel(eventTimes2));
-jitterIdx = randperm(numel(eventTimes2), numJitter);
-jitter(jitterIdx) = (rand(numJitter,1)*2 - 1) * 2;  % ±2 sec jitter
-eventTimes2 = eventTimes2 + jitter;
-
+jitter = ((rand(size(eventTimes2))*2-1)*2);
+jitter(randperm(numel(eventTimes2), round(2*numel(eventTimes2)/3))) = 0;
+eventTimes2 = eventTimes2 + jitter
 %% run tests
 useParPool = false;
 res = nan(5,numClus); %n_tests x n_clus
@@ -36,16 +33,14 @@ res = nan(5,numClus); %n_tests x n_clus
 for thisClus = 1:numClus
 
     fprintf('Running tests for cluster %d/%d\n',thisClus,numClus);
-    theseSpikeTimes = spikeTimesAgg{thisClus};
-
+r
     %1 - default
     useMaxDur = 1;
     rng(1,'twister');
     res(1,thisClus) = latenzy2(theseSpikeTimes,eventTimes1,theseSpikeTimes,eventTimes2,useMaxDur,...
-        [],[],useParPool,[],[],1);
-    drawnow;
+        [],[],useParPool,[],1);
     
-    
+    pause
     %2 - specified [include bl]
     useMaxDur = [-0.1 1];
     restrictNeg = false;
