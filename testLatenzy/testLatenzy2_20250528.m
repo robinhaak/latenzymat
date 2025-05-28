@@ -1,0 +1,83 @@
+%testLatenzy2_20250528
+%Robin Haak
+clear; rng(1,'twister');
+
+%% load data
+try
+    load(fullfile(pwd,'Topo2_20220126_AP.mat'));
+catch ME
+    disp(ME.message);
+end
+
+idxIncl = ([sAP.sCluster.KilosortGood] | [sAP.sCluster.Contamination] < 0.1) & ...
+    contains({sAP.sCluster.Area},'primary visual','IgnoreCase',true);
+
+spikeTimesAgg = {sAP.sCluster(idxIncl).SpikeTimes};
+numClus = numel(spikeTimesAgg);
+
+sBlock = sAP.cellBlock{4}; %DG, 1s
+eventTimes = sBlock.vecStimOnTime;
+
+%create two conditions
+n = numel(eventTimes);
+idx = randperm(n);
+eventTimes1 = eventTimes(idx(1:floor(n/2)));
+eventTimes2 = eventTimes(idx(floor(n/2)+1:end));
+jitter = (rand(size(eventTimes2))*2-1)*2;
+eventTimes2 = eventTimes2 + jitter;
+
+%% run tests
+useParPool = false;
+res = nan(6,numClus); %n_tests x n_clus
+
+for thisClus = 1:numClus
+
+    fprintf('Running tests for cluster %d/%d\n',thisClus,numClus);
+    theseSpikeTimes = spikeTimesAgg{thisClus};
+
+    %1 - default
+    useMaxDur = 1;
+    rng(1,'twister');
+    res(1,thisClus) = latenzy2(theseSpikeTimes,eventTimes1,theseSpikeTimes,eventTimes2,useMaxDur,...
+        [],[],useParPool,[],[]);
+
+    %2 - compare to latenzy estimate 
+    latz1 = latenzy(theseSpikeTimes,eventTimes1,useMaxDur,[],[],[],[],useParPool,[],[],[]);
+    if ~isnan(res(1,thisClus)) && ~isnan(latz1)
+        res(2,thisClus) = res(1,thisClus)-latz1;
+    end
+    
+    %3 - specified [include bl]
+    useMaxDur = [-0.1 1];
+    restrictNeg = false;
+    rng(1,'twister');
+    res(3,thisClus) = latenzy2(theseSpikeTimes,eventTimes1,theseSpikeTimes,eventTimes2,useMaxDur,...
+        [],[],useParPool,[],restrictNeg);
+
+    %4 - specified [include bl, restrict]
+    useMaxDur = [-0.1 1];
+    restrictNeg = true;
+    rng(1,'twister');
+    res(4,thisClus) = latenzy2(theseSpikeTimes,eventTimes1,theseSpikeTimes,eventTimes2,useMaxDur,...
+        [],[],useParPool,[],restrictNeg);
+
+    %5 - specified [more resamps, use quantiles]
+    useMaxDur = 1;
+    resampNum = 500;
+    useDirectQuant = true;
+    rng(1,'twister');
+    res(5,thisClus) = latenzy2(theseSpikeTimes,eventTimes1,theseSpikeTimes,eventTimes2,useMaxDur,...
+        resampNum,[],useParPool,useDirectQuant,[]);
+
+    %6 - unequal trial N
+    useMaxDur = 1;
+    trialIdx1 = 1:3:numel(eventTimes1);
+    trialIdx2 = 1:4:numel(eventTimes1);
+    rng(1,'twister');
+    res(6,thisClus) = latenzy2(theseSpikeTimes,eventTimes1(trialIdx1),theseSpikeTimes,...
+        eventTimes2(trialIdx2),useMaxDur,[],[],useParPool,[],[]);
+
+end
+
+
+
