@@ -39,7 +39,7 @@ firstSample = [];
 for thisEvent = 1:eventNum
     eventT = eventTimes(thisEvent)+useMaxDur(1);
     startSample = find(spikeTimes >= eventT, 1);
-    endSample = find(spikeTimes > (eventT+duration), 1)-1;
+    endSample = find(spikeTimes < (eventT+duration), 1,'last');
 
     %handle cases where no pre-event spikes are found
     if isempty(startSample), startSample = sampleNum+1; end
