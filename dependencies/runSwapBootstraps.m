@@ -60,7 +60,7 @@ else
         % useRand2 = randi(numEvTot,[1,numEv2]);
 
         %without replacement:
-        shuffledIdx = randperm(numEvTot);
+        shuffledIdx = my_randperm(numEvTot);
         useRand1 = shuffledIdx(1:numEv1);
         useRand2 = shuffledIdx(numEv1+1:end);
 
