@@ -23,6 +23,8 @@ print(f"Estimated latency: {L:.2f} ms")
 fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
+
+
 ## Estimating spiking starts to diverge between conditions with `latenZy2`
 **`latenZy2`** identifies the time point at which neural spiking **begins to diverge between experimental conditions**.
   
