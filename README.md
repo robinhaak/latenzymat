@@ -1,3 +1,4 @@
+
 # The *latenZy* repository
 
 Welcome to the *latenZy* repository — a Python and MATLAB toolbox containing two novel, binning-free methods for estimating the onset of neural spiking activity with high temporal precision: `latenZy` and `latenZy2`.
@@ -24,7 +25,7 @@ fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
 ![Estimation example](examples/latenzy_ex.png)
-*Example: Detecting neural spiking onset using `latenZy`. Red = estimate.*
+*Fig. 1: Detecting neural spiking onset using `latenZy`. Red = estimate.*
 
 
 ## Estimating when spiking starts to diverge with `latenZy2`
@@ -45,4 +46,9 @@ fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
 ![Estimation example](examples/latenzy2_ex.png)
-*Example: Detecting the onset of spiking divergence using `latenZy2`. Red = estimate.*
+*Fig. 2: Detecting the onset of spiking divergence using `latenZy2`. Red = estimate.*
+
+## Dependencies
+The MATLAB implementation requires the following Mathworks toolboxes to work:
+- Signal Processing Toolbox
+- Optional: Parallel Computing Toolbox to reduce computation time
