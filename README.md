@@ -1,16 +1,13 @@
 # The *latenZy* repository
 
-Welcome to the *latenZy* repository — a Python and MATLAB toolbox containing two novel, binning-free methods for estimating the onset of neural spiking activity with high temporal precision: `latenZy` and `latenZy2`. - **`latenZy`** estimates **when neural responses begin following discrete events** by detecting event-locked changes in spiking rates. - **`latenZy2`** identifies the time point at which neural spiking **begins to diverge between experimental conditions**.
+Welcome to the *latenZy* repository — a Python and MATLAB toolbox containing two novel, binning-free methods for estimating the onset of neural spiking activity with high temporal precision: `latenZy` and `latenZy2`.
 
 Our preprint describing these methods is now online: ...
 
-## Rationale
 
+## Estimating response latencies with `latenZy`
+**`latenZy`** is designed to estimate **when neural responses begin following discrete events** by detecting event-locked changes in spiking rates. 
 
-
-## Estimating Response Latency with `latenZy`
-
-`latenZy` estimates when neural responses start relative to an event, given spike times, event times, and a time window. Below are usage examples in MATLAB and Python.
 
 **Python example:**
 ```python
@@ -26,5 +23,19 @@ print(f"Estimated latency: {L:.2f} ms")
 fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
-**Example, V1 neuron stimulated with drifting gratings:**
-Data from _Montijn et al., 2023_
+## Estimating spiking starts to diverge between conditions with `latenZy2`
+**`latenZy2`** identifies the time point at which neural spiking **begins to diverge between experimental conditions**.
+  
+**Python example:**
+```python
+from latenzy import latenzy2
+
+L, s_latenzy2 = latenzy2(spike_times1, event_times1, spike_times2, event_times2, use_max_dur)
+print(f"Estimated latency: {L:.2f} ms")
+```
+
+**MATLAB example:**
+```matlab
+[L, sLatenzy2] = latenzy2(spikeTimes1, eventTimes1, spikeTimes2, eventTimes2, useMaxDur);
+fprintf('Estimated latency: %.2f ms\n', L);
+```
