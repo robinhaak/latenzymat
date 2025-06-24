@@ -24,10 +24,10 @@ fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
 ![Estimation example](examples/latenzy_ex.png)
-*Example detecting neural spiking onset using `latenZy`. Red = estimate*
+*Example detecting neural spiking onset using `latenZy`. Red = estimate.*
 
 
-## Estimating spiking starts to diverge between conditions with `latenZy2`
+## Estimating when spiking starts to diverge with `latenZy2`
 **`latenZy2`** identifies the time point at which neural spiking **begins to diverge between experimental conditions**.
   
 **Python example:**
@@ -45,4 +45,4 @@ fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
 ![Estimation example](examples/latenzy2_ex.png)
-*Example of detecting the onset of spiking divergence using `latenZy2`. Red = estimate*
+*Example of detecting the onset of spiking divergence using `latenZy2`. Red = estimate.*
