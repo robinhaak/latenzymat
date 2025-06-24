@@ -123,7 +123,7 @@ end
 
 %allowNegative
 if ~exist('restrictNegative','var') || isempty(restrictNeg)
-    restrictNeg = true;
+    restrictNeg = false;
 end
 
 %get makePlots
