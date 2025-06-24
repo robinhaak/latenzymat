@@ -27,3 +27,4 @@ fprintf('Estimated latency: %.2f ms\n', L);
 ```
 
 **Example, V1 neuron stimulated with drifting gratings:**
+Data from _Montijn et al., 2023_
