@@ -1,15 +1,16 @@
-function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)
+function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useDur,resampNum,peakAlpha,useParPool,useDirectQuant,restrictNeg,makePlots)
 % get latency of spiking difference between two conditions, syntax:
-% [respLatency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)  
+% [respLatency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useDur,resampNum,minPeakZ,useParPool,useDirectQuant,restrictNeg,makePlots)  
 %   inputs:
 %   - spikeTimes1: [S x 1]: spike times condition 1 (s)
 %   - eventTimes1: [T x 1]: event times condition 1 (s)
 %   - spikeTimes2: [S x 1]: spike times condition 2 (s) (default: spikeTimes2 = spikeTimes1);
 %   - eventTimes2: [T x 1]: event times condition 2 (s)
-%   - useMaxDur: scalar or [N x 2], time to include after/around event times (s) (default: [0 min(diff(eventtimes))])
-%   - resampNum: integer, number of resamples (default: 100)
-%   - jitterSize: scalar, temporal jitter window relative to useMaxDur (s) (default: 2)
-%   - minPeakZ: scalar, minimal z-score for significance (default: 1.96)
+%   - useDur: scalar or [N x 2], time to include after/around event times (s)
+%       - if a scalar is provided, it is interpreted as the duration after each event, with the start time set automatically to zero
+%       - default: [0, min(diff(eventtimes))], i.e., from the event time to the minimum interval between events%   - resampNum: integer, number of resamples (default: 100)
+%   - jitterSize: scalar, temporal jitter window relative to useDur (s) (default: 2)
+%   - peakAlpha: scalar, significance threshold (default: 0.05)
 %   - doStitch: boolean flag, perform data stitching, highly recommended! (default: true)
 %   - useParPool: boolean flag, use parallel pool for resamples (default: true, but only when parallel pool is already active!)
 %   - useDirectQuant: boolean flag, use the empirical null-distribution rather than the Gumbel approximation (default: false)
@@ -19,7 +20,7 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %   *alternative input for latenzy2() is possible:
 %   - spikeTimes1 and spikeTimes2 should be cell arrays, where every cell contains the aligned(!) spikes for event.
 %   - set eventTimes1 and eventTimes 2 to [].
-%   - set useMaxDur to match (or use a smaller window) (default: [0    max(spikeTimes)
+%   - set useDur to match (or use a smaller window) (default: [0    max(spikeTimes)
 %
 %   outputs:
 %   - respLatency: response latency (s) (NaN when no latency could be estimated)
@@ -42,7 +43,7 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %       - handleFigs: figure handles
 %
 % history:
-%   v0.9 - 18 February 2025
+%   v0.9 - 30 June 2025
 %   - created by Robin Haak
 
 %% prep
@@ -65,31 +66,31 @@ else
     eventTimes2 = eventTimes2(:);
 end
 
-%get useMaxDur
-if ~exist('useMaxDur','var') || isempty(useMaxDur)
+%get useDur
+if ~exist('useDur','var') || isempty(useDur)
     if altInput
-        useMaxDur = min([max(vertcat(spikeTimes1{:})) max(vertcat(spikeTimes2{:}))]);
+        useDur = min([max(vertcat(spikeTimes1{:})) max(vertcat(spikeTimes2{:}))]);
     else
         eventTimes1 = sort(eventTimes1);
         eventTimes2 = sort(eventTimes2);
-        useMaxDur = min([min(diff(eventTimes1)) min(diff(eventTimes2))]);
+        useDur = min([min(diff(eventTimes1)) min(diff(eventTimes2))]);
     end
 end
-if isscalar(useMaxDur)
-    useMaxDur = sort([0 useMaxDur]);
-elseif numel(useMaxDur)~=2
-    error([mfilename ':WrongMaxDurInput'],'useMaxDur must be a scalar or a two-element array');
+if isscalar(useDur)
+    useDur = sort([0 useDur]);
+elseif numel(useDur)~=2
+    error([mfilename ':WrongMaxDurInput'],'useDur must be a scalar or a two-element array');
 end
 
-%check useMaxDur
-if useMaxDur(2)>0
-    assert(useMaxDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
-        sprintf('When useMaxDur(2) > 0, useMaxDur(1) must be a negative scalar or 0, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
-elseif useMaxDur(2)==0
-    assert(useMaxDur(1)<0,[mfilename ':WrongMaxDurInput'],...
-        sprintf('When useMaxDur(2) is 0, useMaxDur(1) must be a negative scalar, you requested [%.3f %.3f]',useMaxDur(1),useMaxDur(2)));
-elseif useMaxDur(2)<0
-        error([mfilename ':WrongMaxDurInput'],'useMaxDur(2) cannot be negative when useMaxDur(1) is negative!');
+%check useDur
+if useDur(2)>0
+    assert(useDur(1)<=0,[mfilename ':WrongMaxDurInput'],...
+        sprintf('When useDur(2) > 0, useDur(1) must be a negative scalar or 0, you requested [%.3f %.3f]',useDur(1),useDur(2)));
+elseif useDur(2)==0
+    assert(useDur(1)<0,[mfilename ':WrongMaxDurInput'],...
+        sprintf('When useDur(2) is 0, useDur(1) must be a negative scalar, you requested [%.3f %.3f]',useDur(1),useDur(2)));
+elseif useDur(2)<0
+        error([mfilename ':WrongMaxDurInput'],'useDur(2) cannot be negative when useDur(1) is negative!');
 end
 
 %get resampNum
@@ -97,9 +98,9 @@ if ~exist('resampNum','var') || isempty(resampNum)
     resampNum = 250;
 end
 
-%get peakZ
-if ~exist('minPeakZ','var') || isempty(minPeakZ)
-    minPeakZ = 1.96; %corresponds to alpha=0.05
+%get peakAlpha
+if ~exist('peakAlpha','var') || isempty(peakAlpha)
+    peakAlpha = 0.05;
 end
 
 %get useParPool
@@ -153,13 +154,13 @@ meanRandDiffAgg = [];
 pValPeakAgg = [];
 peakZAgg = [];
 keepPeaks = [];
-thisMaxDur = useMaxDur;
+thisMaxDur = useDur;
 doContinue = true;
 thisIter = 0;
 sLatenzy2 = struct;
 
 %check if negative latencies are restricted
-minLatency = useMaxDur(1);
+minLatency = useDur(1);
 if restrictNeg
     minLatency = 0;
 end
@@ -249,7 +250,7 @@ while doContinue
     end
 
     %check whether to continue
-    if realPeakT > minLatency && peakZ > minPeakZ && ~isinf(peakZ)
+    if realPeakT > minLatency && pValPeak < peakAlpha && ~isinf(peakZ)
         keepPeaks(thisIter) = true;
         thisMaxDur(2) = realPeakT;
     else
@@ -264,7 +265,7 @@ if ~isempty(thesePeakTimes)
     latency = thesePeakTimes(end);
 
     %warning
-    if latency > (useMaxDur(1)+sum(abs(useMaxDur))/2) && giveLateWarn
+    if latency > (useDur(1)+sum(abs(useDur))/2) && giveLateWarn
         warning('Estimated latency is quite late in the window (>T/2), consider plotting and/or adjusting window');
     end
 else
@@ -291,7 +292,7 @@ sLatenzy2.latenzyIdx = peakTimesAgg==latency;
 %plot, optional
 if makePlots>0
     if altInput,makePlots=9;end
-    sLatenzy2.figHandles = makeLatenzy2Figs(sLatenzy2,spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useMaxDur,makePlots);
+    sLatenzy2.figHandles = makeLatenzy2Figs(sLatenzy2,spikeTimes1,eventTimes1,spikeTimes2,eventTimes2,useDur,makePlots);
 end
 
 end
