@@ -99,7 +99,7 @@ p(2) = plot(realTime{1},realFrac{2,1},'color',[0.9255 0.7255 0.5670],'LineWidth'
 set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
-ylabel('Cumulative spike count/trial');
+ylabel('Cumulative spike count (norm.)');
 title('Cumulative spikes');
 lgd = legend(p,{'1','2'},'Location','southeast','Box','off');
 title(lgd, 'Condition');
@@ -130,7 +130,7 @@ set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
 ylabel('Deviation (Δcount)');
-title('Linear-subtracted difference, \color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated latency');
+title('Offset from linear');
 lgd = legend(p, labels, 'Location', 'southeast','Box','off');
 title(lgd, 'Iteration');
 
@@ -149,5 +149,5 @@ ylabel('Deviation (Δcount)');
 title(sprintf('Real data + resamplings, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
-sgtitle(sprintf('Estimated latency of the difference = %.4fs', latency), 'FontWeight', 'bold');
+sgtitle(sprintf('latenZy2 estimate = %.4fs', latency), 'FontWeight', 'bold');
 end

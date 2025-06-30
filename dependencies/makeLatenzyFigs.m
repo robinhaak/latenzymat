@@ -39,7 +39,7 @@ if makePlots==1
     set(gca,'box','off','TickDir','out');
     ylabel('Trial');
     xlabel('Time from event (s)');
-    title('Spike raster plot');
+    title('Aligned spikes');
 end
 
 %plot cumulative spikes over time
@@ -69,7 +69,7 @@ set(gca,'box','off','TickDir','out');
 xlim(useMaxDur);
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
-title('\color[rgb]{0.8627,0.0784,0.2353}x\color{black} = estimated latency');
+title('Deviation from uniform');
 
 %for iteration w/latency, plot real + jitters
 figHandles(4) = subplot(2,2,4); hold on
@@ -83,8 +83,8 @@ else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
-title(sprintf('Real data + jitterss, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
+title(sprintf('Real data + jitters, mean-subtracted (Z=%.1f)',peakZ(latenzyIdx)));
 
 %add title
-sgtitle(sprintf('Estimated latency = %.4fs', latency), 'FontWeight', 'bold');
+sgtitle(sprintf('latenZy estimate = %.4fs', latency), 'FontWeight', 'bold');
 end

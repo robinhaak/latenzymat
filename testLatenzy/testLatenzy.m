@@ -25,7 +25,7 @@ theseSpikeTimes = spikeTimesAgg{thisClus};
 
 useMaxDur = 1;
 rng(1,'twister');
-res(count) = latenzy(theseSpikeTimes,eventTimes,useMaxDur,[],[],[],[],useParPool,[],[]);
+res(count) = latenzy(theseSpikeTimes,eventTimes,useMaxDur,[],[],[],[],useParPool,[],[],1);
 assert( res(count)==saved.res(count) | (isnan(res(count)) & isnan(saved.res(count)) ))
 
 %% Test 2, specified 2 [include bl, restrict]

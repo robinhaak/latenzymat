@@ -66,7 +66,7 @@ i = 1;
 thisClus = selClus(i);
 theseSpikeTimes = spikeTimesAgg{thisClus};
 useMaxDur = 1;
-makePlots = 0;
+makePlots = 1;
 rng(1,'twister');
 res(count) = latenzy2(theseSpikeTimes,eventTimes1,theseSpikeTimes,eventTimes2,useMaxDur,...
     [],[],useParPool,[],[],makePlots);
