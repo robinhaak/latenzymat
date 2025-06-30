@@ -1,10 +1,11 @@
-function [peaksRandD,resampD,resampT] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,useMaxDur,resampNum,useParPool,useFastInterp)
+function [peaksRandD,resampD,resampT] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,useDur,resampNum,useParPool,useFastInterp)
 %run bootstraps by swapping trials, syntax:
-%   [peaksRandD,resampD,resampT] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,useMaxDur,resampNum,useParPool,useFastInterp)
+%   [peaksRandD,resampD,resampT] = runSwapBootstraps(spikesPerEvent1,spikesPerEvent2,useDur,resampNum,useParPool,useFastInterp)
 %
 % history:
 %   v0.9 - 19 February 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %% run bootstraps
 %swap trials randomly in each resampling
@@ -36,7 +37,7 @@ if useParPool
         end
 
         %get difference
-        [randD,randT] = calcTempDiff2(spikesPerTrial1_Rand,spikesPerTrial2_Rand,useMaxDur,useFastInterp);
+        [randD,randT] = calcTempDiff2(spikesPerTrial1_Rand,spikesPerTrial2_Rand,useDur,useFastInterp);
 
         %get largest deviation
         maxVal = max(randD);
@@ -71,7 +72,7 @@ else
         end
 
         %get difference
-        [randD,randT] = calcTempDiff2(spikesPerTrial1_Rand,spikesPerTrial2_Rand,useMaxDur,useFastInterp);
+        [randD,randT] = calcTempDiff2(spikesPerTrial1_Rand,spikesPerTrial2_Rand,useDur,useFastInterp);
 
         %get largest deviation
         maxVal = max(randD);

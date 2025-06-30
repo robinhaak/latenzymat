@@ -1,25 +1,26 @@
-function [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useMaxDur,discardEdges)
+function [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useDur,discardEdges)
 % perform data-stitching, syntax:
-%   [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useMaxDur,discardEdges)
+%   [pseudoSpikeTimes, pseudoEventTimes] = getPseudoTimes(spikeTimes,eventTimes,useDur,discardEdges)
 %
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %ensure correct orientation
 spikeTimes = sort(spikeTimes(:));
 eventTimes = sort(eventTimes(:));
 
 %check inputs
-if ~exist('useMaxDur', 'var') || isempty(useMaxDur)
+if ~exist('useDur', 'var') || isempty(useDur)
     eventTimes = sort(eventTimes);
-    useMaxDur = min(diff(eventTimes));
+    useDur = min(diff(eventTimes));
 end
 
-if isscalar(useMaxDur), useMaxDur = sort([0 useMaxDur]); end
-assert(useMaxDur(2) > useMaxDur(1), [mfilename ':WrongMaxDurInput'], ...
-    sprintf('The second element of useMaxDur must be larger than the first element, you requested [%.3f %.3f]',...
-    useMaxDur(1), useMaxDur(2)));
+if isscalar(useDur), useDur = sort([0 useDur]); end
+assert(useDur(2) > useDur(1), [mfilename ':WrongMaxDurInput'], ...
+    sprintf('The second element of useDur must be larger than the first element, you requested [%.3f %.3f]',...
+    useDur(1), useDur(2)));
 
 if ~exist('discardEdges', 'var') || isempty(discardEdges)
     discardEdges = false;
@@ -30,14 +31,14 @@ sampleNum = numel(spikeTimes);
 eventNum = numel(eventTimes);
 pseudoSpikeT = cell(1, eventNum);
 pseudoEventTimes = nan(eventNum, 1);
-duration = useMaxDur(2)-useMaxDur(1);
+duration = useDur(2)-useDur(1);
 pseudoEventT = 0;
 lastUsedSample = 0;
 firstSample = [];
 
 %loop over each event
 for thisEvent = 1:eventNum
-    eventT = eventTimes(thisEvent)+useMaxDur(1);
+    eventT = eventTimes(thisEvent)+useDur(1);
     startSample = find(spikeTimes >= eventT, 1);
     endSample = find(spikeTimes < (eventT+duration), 1,'last');
 
@@ -128,5 +129,5 @@ end
 pseudoSpikeTimes = cell2mat(pseudoSpikeT(:));
 
 %adjust event times
-pseudoEventTimes = pseudoEventTimes+abs(useMaxDur(1));
+pseudoEventTimes = pseudoEventTimes+abs(useDur(1));
 end

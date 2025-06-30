@@ -43,8 +43,9 @@ function [latency,sLatenzy2] = latenzy2(spikeTimes1,eventTimes1,spikeTimes2,even
 %       - handleFigs: figure handles
 %
 % history:
-%   v0.9 - 30 June 2025
+%   v0.9 - 18 February 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %% prep
 %check for alternative input

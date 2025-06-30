@@ -1,10 +1,10 @@
-function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plotMaxSpikes, addLabels)
+function rasterPlot(spikeTimes, eventTimes, useDur, trialType, plotColor, plotMaxSpikes, addLabels)
 % make a raster plot, syntax:
-%   rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plotMaxSpikes, addLabels)
+%   rasterPlot(spikeTimes, eventTimes, useDur, trialType, plotColor, plotMaxSpikes, addLabels)
 %   inputs:
 %   - spikeTimes [S x 1]: spike times (s)*
 %   - eventTimes [T x 1]: event (start) times (s)
-%   - useMaxDur: scalar or [pre post], time to include after/around event times (s)
+%   - useDur: scalar or [pre post], time to include after/around event times (s)
 %   - trialType: label for trialtype (e.g., orientation), same size as eventTimes
 %   - plotColor: colors for plotting [3 x N], where N is unique trialtypes
 %   - plotMaxSpikes: max number of spikes to plot (default: inf)
@@ -13,26 +13,27 @@ function rasterPlot(spikeTimes, eventTimes, useMaxDur, trialType, plotColor, plo
 % *alternative input available:
 %   - spikeTimes should be a cell array, where every cell contains the aligned(!) spikes for a repetition
 %   - set eventTimes to []
-%   - set useMaxDur to match (or use a smaller window)
+%   - set useDur to match (or use a smaller window)
 %
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %% prep
 %ensure correct orientation
 spikeTimes = spikeTimes(:);
 eventTimes = eventTimes(:);
 
-%get useMaxDur
-if ~exist('useMaxDur','var') || isempty(useMaxDur)
+%get useDur
+if ~exist('useDur','var') || isempty(useDur)
     sortedEventTimes = sort(eventTimes);
-    useMaxDur = min(diff(sortedEventTimes));
+    useDur = min(diff(sortedEventTimes));
 end
-if isscalar(useMaxDur)
-    useMaxDur = sort([0 useMaxDur]);
-elseif numel(useMaxDur)~=2
-    error([mfilename ':WrongMaxDurInput'],'useMaxDur must be a scalar or a two-element array');
+if isscalar(useDur)
+    useDur = sort([0 useDur]);
+elseif numel(useDur)~=2
+    error([mfilename ':WrongMaxDurInput'],'useDur must be a scalar or a two-element array');
 end
 
 if ~exist('trialType', 'var') || isempty(trialType)
@@ -70,7 +71,7 @@ if numTrialType > 1
         thisTrialStarts = eventTimes(trialType == thisTrialType);
 
         %get spike times in subset of trials
-        [~, spikesPerEvent] = getRelSpikeTimes(spikeTimes, thisTrialStarts, useMaxDur);
+        [~, spikesPerEvent] = getRelSpikeTimes(spikeTimes, thisTrialStarts, useDur);
 
         %plot spikes per trial
         for thisTrial = 1:numel(thisTrialStarts)
@@ -92,7 +93,7 @@ if numTrialType > 1
         offset = offset + numTrials;
     end
 else
-    [~, spikesPerEvent] = getRelSpikeTimes(spikeTimes, eventTimes, useMaxDur);
+    [~, spikesPerEvent] = getRelSpikeTimes(spikeTimes, eventTimes, useDur);
 
     %plot spikes per trial
     for thisTrial = 1:numel(eventTimes)
@@ -105,7 +106,7 @@ hold off;
 
 %set figure properties
 ylim([0.5 numel(eventTimes) + 0.5]);
-xlim(useMaxDur);
+xlim(useDur);
 xlabel('Time from event (s)');
 ylabel('Trial');
 

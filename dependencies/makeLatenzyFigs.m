@@ -1,9 +1,10 @@
-function figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useMaxDur,makePlots)
+function figHandles = makeLatenzyFigs(sLatenzy,spikeTimes,eventTimes,useDur,makePlots)
 % make figures for latenzy method
 %
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %% prep
 %#ok<*AGROW>
@@ -32,7 +33,7 @@ figHandles = nan(1,4);
 if makePlots==1
     %raster plot
     figHandles(1) = subplot(2,2,1);
-    rasterPlot(spikeTimes,eventTimes,useMaxDur);
+    rasterPlot(spikeTimes,eventTimes,useDur);
     yLim = ylim;
     hold on
     plot([latency latency], yLim,'color',[0.8627 0.0784 0.2353],'LineStyle','--','LineWidth',lineWidth);
@@ -50,7 +51,7 @@ for iter = 1:numIters
     labels{iter} = sprintf('%d', iter);
 end
 set(gca,'box','off','TickDir','out');
-xlim(useMaxDur);
+xlim(useDur);
 xlabel('Time from event (s)');
 ylabel('Fractional spike position');
 title('Cumulative spikes');
@@ -59,14 +60,14 @@ title(lgd, 'Iteration');
 
 %plot offset from linear baseline
 figHandles(3) = subplot(2,2,3); hold on
-plot(useMaxDur,[0 0],'color',[0.5 0.5 0.5],'LineWidth',lineWidth,'LineStyle','--');
+plot(useDur,[0 0],'color',[0.5 0.5 0.5],'LineWidth',lineWidth,'LineStyle','--');
 for iter = 1:numIters
     plot(realTime{iter},realDiff{iter},'color',useColors(iter,:),'LineWidth',lineWidth);
 end
 scatter(peakTimes(~latenzyIdx),peakVals(~latenzyIdx),markerSize,'x','MarkerEdgeColor',[0 0 0],'LineWidth',lineWidth);
 scatter(peakTimes(latenzyIdx),peakVals(latenzyIdx),markerSize,'x','MarkerEdgeColor',[0.8627 0.0784 0.2353],'LineWidth',lineWidth);
 set(gca,'box','off','TickDir','out');
-xlim(useMaxDur);
+xlim(useDur);
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');
 title('Deviation from uniform');
@@ -78,8 +79,8 @@ for thisShuffle=1:length(randDiff)
 end
 plot(realTime{latenzyIdx},(realDiff{latenzyIdx}-meanRealDiff(latenzyIdx)),'color',useColors(latenzyIdx,:),'LineWidth',lineWidth);
 scatter(peakTimes(latenzyIdx),(peakVals(latenzyIdx)-meanRealDiff(latenzyIdx)),markerSize,'x','MarkerEdgeColor',[0.8627 0.0784 0.2353],'LineWidth',lineWidth);
-if latenzyIdx(1),xlim(useMaxDur);
-else, xlim([useMaxDur(1)  peakTimes(find(latenzyIdx)-1)]);end
+if latenzyIdx(1),xlim(useDur);
+else, xlim([useDur(1)  peakTimes(find(latenzyIdx)-1)]);end
 set(gca,'box','off','TickDir','out');
 xlabel('Time from event (s)');
 ylabel('Deviation (Δfraction)');

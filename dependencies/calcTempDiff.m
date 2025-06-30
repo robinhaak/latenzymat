@@ -1,10 +1,11 @@
-function [tempDiff,relSpikeTimes,spikeFrac,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useMaxDur)
+function [tempDiff,relSpikeTimes,spikeFrac,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useDur)
 % compute temporal offset vector, syntax:
-%   [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useMaxDur)
+%   [tempDiff,relSpikeTimes,spikeFracs,fracLinear] = calcTempDiff(spikeTimes,eventTimes,useDur)
 %
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %% prep
 tempDiff = [];
@@ -12,7 +13,7 @@ spikeFrac = [];
 fracLinear = [];
 
 %get spikes relative to events (and add two artificial spikes)
-relSpikeTimes = getRelSpikeTimes(spikeTimes,eventTimes,useMaxDur,true);
+relSpikeTimes = getRelSpikeTimes(spikeTimes,eventTimes,useDur,true);
 if isempty(relSpikeTimes)
     return
 end

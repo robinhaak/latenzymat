@@ -1,10 +1,11 @@
-function [peaksRandD,resampD,resampT] = runJitterBootstraps(spikeTimes,eventTimes,useMaxDur,resampNum,jitterSize,useParPool)
+function [peaksRandD,resampD,resampT] = runJitterBootstraps(spikeTimes,eventTimes,useDur,resampNum,jitterSize,useParPool)
 % run bootstraps by jittering event times, syntax:
 %   [peaksRandD,randD,randT] = runJitterBootstraps(spikeTimes,eventTimes,preEventTime,postEventTime,resampNum,jitterSize,useParPool)
 %
 % history:
 %   v0.9 - 6 January 2025
 %   - created by Robin Haak
+%   v1.0 - 30 June 2025
 
 %% prep
 %ensure correct orientation
@@ -16,7 +17,7 @@ resampD = cell(1,resampNum);
 resampT = cell(1,resampNum);
 peaksRandD = nan(1,resampNum);
 eventNum = numel(eventTimes);
-fullDuration = useMaxDur(2)-useMaxDur(1);
+fullDuration = useDur(2)-useDur(1);
 jitterPerTrial = nan(eventNum,resampNum);
 
 %uniform jitters between jitterSize*[-tau,+tau]
@@ -28,7 +29,7 @@ end
 if useParPool
     parfor resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
-        [randD,randT] = calcTempDiff(spikeTimes,randEventT,useMaxDur);
+        [randD,randT] = calcTempDiff(spikeTimes,randEventT,useDur);
         
         %get largest deviation
         maxVal = max(randD);
@@ -48,7 +49,7 @@ if useParPool
 else
     for resamp=1:resampNum
         randEventT = eventTimes+jitterPerTrial(:,resamp);
-        [randD,randT] = calcTempDiff(spikeTimes,randEventT,useMaxDur);
+        [randD,randT] = calcTempDiff(spikeTimes,randEventT,useDur);
  
         %get largest deviation
         maxVal = max(randD);
