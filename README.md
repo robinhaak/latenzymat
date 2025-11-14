@@ -1,4 +1,4 @@
-# *latenZy* (Legacy)
+# *latenZy* (deprecated)
 
 This repository contains the original development version of *latenZy*, a non-parametric, binning-free method for estimation latencies from neural spiking data
 
